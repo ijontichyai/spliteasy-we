@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { FlaskConical, RotateCcw } from "lucide-react";
+import { FlaskConical, RotateCcw, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n/context";
 import { PlanView, Avatar } from "@/components/plan/plan-view";
@@ -50,7 +50,7 @@ function DemoPage() {
         <Button size="sm" variant="ghost" onClick={() => setData(demoScenario())}><RotateCcw className="size-4" />{t("demo.reset")}</Button>
       </div>
       <div className="mb-5 flex flex-wrap items-center gap-2" role="group" aria-label="Ver como / View as">
-        <span className="text-xs text-muted-foreground">👤</span>
+        <UserRound className="size-4 text-muted-foreground" aria-hidden />
         {data.members.map((m, i) => (
           <button key={m.id} type="button" aria-pressed={data.me === m.id} onClick={() => setData((d) => ({ ...d, me: m.id }))}
             className={`flex items-center gap-2 rounded-full border py-1 pl-1 pr-3 text-sm transition-colors ${data.me === m.id ? "border-primary bg-card shadow-soft" : "border-border text-muted-foreground"}`}>
