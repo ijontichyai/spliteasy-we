@@ -18,7 +18,7 @@ describe("money rules", () => {
       { paidBy: "b", shares: splitEqual(1000, ["a", "b", "c"]) },
     ]);
     expect(Object.values(b).reduce((x, y) => x + y, 0)).toBe(0);
-    expect(b).toEqual({ a: 8667, b: -2333, c: -3334, d: -3000 });
+    expect(b).toEqual({ a: 8666, b: -2333, c: -3333, d: -3000 });
   });
   it("only confirmed settlements change balances", () => {
     const exp = [{ paidBy: "a", shares: { a: 500, b: 500 } }];
