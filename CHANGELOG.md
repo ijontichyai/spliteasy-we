@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-13 — UI Enhancement 002
+- Tarjetas de la portada interactivas: Planifica → Mis planes; Descubre → Lugares; Reparte → Gastos.
+- Con un plan activo se abre directamente; con varios se pide elegir; sin planes se ofrece crear uno.
+- Sin sesión: se pide entrar y después se continúa al destino (solo rutas internas).
+- Hover, foco visible y teclado; textos ES/EN. Sin cambios en base de datos, RLS ni cálculos.
+
 ## 2026-11-13 — UI Enhancement 001
 - Temas Claro / Oscuro / Sistema con selector accesible junto a ES/EN.
 - Preferencia guardada en el navegador (`spliteasy.theme`); script en `<head>` evita parpadeos.

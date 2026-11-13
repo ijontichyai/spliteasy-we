@@ -10,7 +10,7 @@ import { errorKey } from "@/lib/errors";
 import { computeBalances, formatMoney, simplifyDebts, splitEqual, toCents } from "@/lib/money";
 import {
   EXPENSE_CATEGORIES, PLACE_CATEGORIES,
-  type ExpenseCategory, type PlaceCategory, type PlanActions, type PlanData,
+  type ExpenseCategory, type PlaceCategory, type PlanActions, type PlanData, type PlanTab,
 } from "./types";
 
 const selectCls = "h-10 w-full rounded-md border border-input bg-background px-3 text-sm";
