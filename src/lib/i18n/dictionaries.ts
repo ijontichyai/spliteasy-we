@@ -223,11 +223,6 @@ const es = {
   "wizard.later": "Lo decido después",
   "wizard.createInvite": "Crear e invitar",
   "home.eyebrow": "Plan · Go · Share",
-  "home.mockLabel": "Vista previa del producto",
-  "home.mockPlan": "Escapada a Cadaqués",
-  "home.mockSpent": "Gastado",
-  "home.mockOf": "de {total}",
-  "home.mockSettled": "Todos en paz",
 };
 export type MessageKey = keyof typeof es;
 
@@ -451,11 +446,6 @@ const en: Record<MessageKey, string> = {
   "wizard.later": "I'll decide later",
   "wizard.createInvite": "Create and invite",
   "home.eyebrow": "Plan · Go · Share",
-  "home.mockLabel": "Product preview",
-  "home.mockPlan": "Getaway to Cadaqués",
-  "home.mockSpent": "Spent",
-  "home.mockOf": "of {total}",
-  "home.mockSettled": "All square",
 };
 
 export const dictionaries: Record<Locale, Record<MessageKey, string>> = { es, en };

@@ -29,12 +29,11 @@ function Home() {
   return (
     <main>
       <section className="bg-hero">
-        <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 pb-16 pt-12 sm:pt-20 lg:grid-cols-[1.15fr_1fr]">
-          <div>
+        <div className="mx-auto max-w-3xl px-4 pb-20 pt-16 text-center sm:pb-28 sm:pt-24">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accent">{t("home.eyebrow")}</p>
-          <h1 className="mt-3 max-w-3xl text-[clamp(2.5rem,6vw,4.75rem)] font-bold leading-[1.02]">{t("home.title")}</h1>
-          <p className="mt-5 max-w-xl text-lg text-muted-foreground">{t("home.subtitle")}</p>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <h1 className="mx-auto mt-4 max-w-2xl text-[clamp(2.5rem,6vw,4.75rem)] font-bold leading-[1.02]">{t("home.title")}</h1>
+          <p className="mx-auto mt-5 max-w-xl text-lg text-muted-foreground">{t("home.subtitle")}</p>
+          <div className="mt-9 flex flex-wrap justify-center gap-3">
             <Button asChild size="lg" className="rounded-full px-7">
               <Link to={session ? "/app" : "/auth"}>{session ? t("home.ctaSignedIn") : t("home.cta")}</Link>
             </Button>
@@ -42,8 +41,6 @@ function Home() {
               <Link to="/demo">{t("home.demo")}</Link>
             </Button>
           </div>
-          </div>
-          <ProductMock />
         </div>
       </section>
       <section className="mx-auto grid max-w-6xl gap-5 px-4 pb-20 pt-4 sm:grid-cols-3">
@@ -65,42 +62,5 @@ function Home() {
         ))}
       </section>
     </main>
-  );
-}
-
-// Illustrative product preview built with tokens only (no imagery); figures are static sample values.
-function ProductMock() {
-  const { t } = useI18n();
-  const people = [
-    { n: "AN", v: "+86,67", pos: true },
-    { n: "BR", v: "−23,33", pos: false },
-    { n: "CA", v: "−33,34", pos: false },
-    { n: "DI", v: "−30,00", pos: false },
-  ];
-  return (
-    <div aria-label={t("home.mockLabel")} role="img" className="relative mx-auto w-full max-w-md">
-      <div className="absolute -inset-4 -z-10 rounded-[2.5rem] bg-premium opacity-20 blur-2xl" />
-      <div className="rounded-[2rem] border border-border bg-surface-1 p-5 shadow-elevation-3">
-        <div className="rounded-2xl bg-premium p-5 text-primary-foreground">
-          <p className="text-xs font-semibold uppercase tracking-wider opacity-80">{t("type.getaway")}</p>
-          <p className="mt-1 font-display text-2xl font-bold">{t("home.mockPlan")}</p>
-          <p className="mt-4 text-xs opacity-80">{t("home.mockSpent")}</p>
-          <p className="money font-display text-3xl font-bold">420,00 €<span className="ml-2 text-sm font-medium opacity-80">{t("home.mockOf", { total: "600 €" })}</span></p>
-          <div className="mt-3 h-2 rounded-full bg-primary-foreground/25"><div className="h-2 w-[70%] rounded-full bg-primary-foreground" /></div>
-        </div>
-        <ul className="mt-4 space-y-2">
-          {people.map((p) => (
-            <li key={p.n} className="flex items-center gap-3 rounded-xl bg-surface-2 px-3 py-2">
-              <span className="flex size-8 items-center justify-center rounded-full bg-surface-3 text-xs font-bold">{p.n}</span>
-              <span className="h-1.5 flex-1 rounded-full bg-surface-3">
-                <span className={`block h-1.5 rounded-full ${p.pos ? "w-4/5 bg-primary" : "w-1/4 bg-accent"}`} />
-              </span>
-              <span className={`money w-16 text-right text-sm font-semibold ${p.pos ? "text-primary" : "text-foreground"}`}>{p.v}</span>
-            </li>
-          ))}
-        </ul>
-        <p className="mt-4 text-center text-xs font-semibold text-muted-foreground">✓ {t("home.mockSettled")}</p>
-      </div>
-    </div>
   );
 }
