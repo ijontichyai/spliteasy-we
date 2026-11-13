@@ -2,8 +2,8 @@
 
 # Estrella guía
 
-Los amigos comparten un viaje y todos quedan en paz con lo que costó.
+Los amigos convierten cualquier idea en un plan que viven juntos.
 
 ## Métrica
 
-Liquidaciones confirmadas por quien recibe el dinero cada mes
+Planes de grupo completados por al menos dos participantes cada mes

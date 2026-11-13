@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-13 — Corrección de definición de producto (sin código)
+- Nueva meta: «Los amigos convierten cualquier idea en un plan que viven juntos.»
+- Nueva métrica principal: planes de grupo completados por al menos dos participantes cada mes.
+- SplitEasy se define como plataforma social de planificación y descubrimiento (PLAN → GO → SHARE), no como app de repartir gastos. Filosofía: «LESS TYPING. MORE LIVING.»
+- Sin cambios en código, base de datos ni funcionalidad.
+
 ## 2026-11-13 — Feature 004 (diseño cerrado, sin implementación)
 - Rediseño visual de la app: sistema de diseño (superficies en capas, elevación, tipografía, dígitos tabulares, motion mínimo).
 - Auditoría sobre capturas reales: mitad del escritorio vacía, tarjetas sin elevación, contraste AA fallado en oscuro, listas con aspecto CRUD.
