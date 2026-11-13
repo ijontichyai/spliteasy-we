@@ -22,8 +22,8 @@ describe("money rules", () => {
   });
   it("only confirmed settlements change balances", () => {
     const exp = [{ paidBy: "a", shares: { a: 500, b: 500 } }];
-    expect(computeBalances(["a", "b"], exp, [{ from: "b", to: "a", cents: 500, confirmed: false }]).b).toBe(-500);
-    expect(computeBalances(["a", "b"], exp, [{ from: "b", to: "a", cents: 500, confirmed: true }]).b).toBe(0);
+    expect(computeBalances(["a", "b"], exp, [{ from: "b", to: "a", cents: 500, confirmed: false }])["b"]).toBe(-500);
+    expect(computeBalances(["a", "b"], exp, [{ from: "b", to: "a", cents: 500, confirmed: true }])["b"]).toBe(0);
   });
   it("suggested transfers settle everyone", () => {
     const b = { a: 8667, b: -2333, c: -3334, d: -3000 };

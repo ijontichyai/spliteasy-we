@@ -30,12 +30,14 @@ export function simplifyDebts(balances: Record<string, number>): Transfer[] {
   const out: Transfer[] = [];
   let i = 0, j = 0;
   while (i < debtors.length && j < creditors.length) {
-    const amt = Math.min(debtors[i].c, creditors[j].c);
-    if (amt > 0) out.push({ from: debtors[i].id, to: creditors[j].id, cents: amt });
-    debtors[i].c -= amt;
-    creditors[j].c -= amt;
-    if (debtors[i].c === 0) i++;
-    if (creditors[j].c === 0) j++;
+    const d = debtors[i]!;
+    const c = creditors[j]!;
+    const amt = Math.min(d.c, c.c);
+    if (amt > 0) out.push({ from: d.id, to: c.id, cents: amt });
+    d.c -= amt;
+    c.c -= amt;
+    if (d.c === 0) i++;
+    if (c.c === 0) j++;
   }
   return out;
 }
@@ -51,6 +53,6 @@ export function computeBalances(memberIds: string[], expenses: LocalExpense[], s
     b[e.paidBy] = (b[e.paidBy] ?? 0) + total;
     for (const [id, c] of Object.entries(e.shares)) b[id] = (b[id] ?? 0) - c;
   }
-  for (const s of settlements) if (s.confirmed) { b[s.from] += s.cents; b[s.to] -= s.cents; }
+  for (const s of settlements) if (s.confirmed) { b[s.from] = (b[s.from] ?? 0) + s.cents; b[s.to] = (b[s.to] ?? 0) - s.cents; }
   return b;
 }
