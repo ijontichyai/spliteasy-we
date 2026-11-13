@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Descubre: sustituir ilustraciones por lugares reales dinámicos — pendiente resolver compatibilidad con ADR-003, costes y configuración de búsqueda
 - [x] Feature 003: diseño y documentación de Google Places
 - [x] Feature 003: búsqueda Places UI Kit en Descubre y sugerencia de nombre en el asistente (autorización posterior)
 - [ ] Feature 003: persistencia de place_id, favoritos y controles de uso — requieren autorización adicional
