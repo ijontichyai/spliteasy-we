@@ -1,5 +1,13 @@
 {
   "version": "7",
   "dialect": "postgresql",
-  "entries": []
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1794593857144,
+      "tag": "0000_phase02_profiles_limits",
+      "breakpoints": true
+    }
+  ]
 }

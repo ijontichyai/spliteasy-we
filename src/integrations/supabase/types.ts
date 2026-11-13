@@ -14,7 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      plan_limits: {
+        Row: {
+          features: Json
+          max_active_owned_plans: number | null
+          max_members_per_plan: number | null
+          tier: string
+          updated_at: string
+        }
+        Insert: {
+          features?: Json
+          max_active_owned_plans?: number | null
+          max_members_per_plan?: number | null
+          tier: string
+          updated_at?: string
+        }
+        Update: {
+          features?: Json
+          max_active_owned_plans?: number | null
+          max_members_per_plan?: number | null
+          tier?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          deleted_at: string | null
+          display_name: string
+          id: string
+          locale: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          deleted_at?: string | null
+          display_name: string
+          id: string
+          locale?: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          deleted_at?: string | null
+          display_name?: string
+          id?: string
+          locale?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
