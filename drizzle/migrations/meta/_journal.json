@@ -8,6 +8,13 @@
       "when": 1794593857144,
       "tag": "0000_phase02_profiles_limits",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1794594375881,
+      "tag": "0001_phase02_revoke_anon",
+      "breakpoints": true
     }
   ]
 }
