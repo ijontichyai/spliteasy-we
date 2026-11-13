@@ -73,6 +73,12 @@
   --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Figtree", ui-sans-serif, system-ui, sans-serif;
   --shadow-soft: var(--shadow-soft);
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --shadow-elevation-1: var(--elevation-1);
+  --shadow-elevation-2: var(--elevation-2);
+  --shadow-elevation-3: var(--elevation-3);
 }
 
 :root {
@@ -94,7 +100,7 @@
   --destructive: oklch(0.58 0.21 27);
   --destructive-foreground: oklch(0.98 0.01 85);
   --border: oklch(0.88 0.02 85);
-  --input: oklch(0.86 0.02 85);
+  --input: oklch(0.80 0.025 85);
   --ring: oklch(0.55 0.09 195);
   --chart-1: oklch(0.7 0.16 40);
   --chart-2: oklch(0.42 0.075 195);
@@ -111,7 +117,14 @@
   --sidebar-ring: oklch(0.55 0.09 195);
   --hero-gradient: radial-gradient(120% 90% at 85% 0%, oklch(0.88 0.09 55 / 0.7), transparent 60%),
     radial-gradient(90% 80% at 0% 100%, oklch(0.85 0.06 190 / 0.6), transparent 60%);
-  --shadow-soft: 0 1px 2px oklch(0.24 0.035 200 / 0.06), 0 12px 32px -12px oklch(0.24 0.035 200 / 0.18);
+  --surface-1: oklch(0.995 0.006 85);
+  --surface-2: oklch(0.982 0.012 85);
+  --surface-3: oklch(0.955 0.018 85);
+  --elevation-1: 0 1px 2px oklch(0.24 0.035 200 / 0.07), 0 8px 20px -10px oklch(0.24 0.035 200 / 0.2);
+  --elevation-2: 0 1px 2px oklch(0.24 0.035 200 / 0.08), 0 6px 12px -6px oklch(0.24 0.035 200 / 0.14), 0 20px 28px -14px oklch(0.24 0.035 200 / 0.24);
+  --elevation-3: 0 2px 4px oklch(0.24 0.035 200 / 0.08), 0 14px 28px -10px oklch(0.24 0.035 200 / 0.2), 0 40px 60px -24px oklch(0.24 0.035 200 / 0.3);
+  --shadow-soft: var(--elevation-1);
+  --gradient-premium: linear-gradient(135deg, oklch(0.42 0.075 195), oklch(0.55 0.09 190));
 }
 
 .dark {
@@ -127,13 +140,13 @@
   --secondary: oklch(0.29 0.028 200);       /* #1D3336 */
   --secondary-foreground: oklch(0.965 0.008 100);
   --muted: oklch(0.29 0.028 200);
-  --muted-foreground: oklch(0.79 0.025 205); /* #A9BDC0 */
+  --muted-foreground: oklch(0.84 0.022 200);
   --accent: oklch(0.72 0.17 38);            /* #FF7755 */
   --accent-foreground: oklch(0.19 0.022 205);
   --destructive: oklch(0.65 0.2 25);
   --destructive-foreground: oklch(0.98 0.01 85);
-  --border: oklch(0.34 0.028 200);
-  --input: oklch(0.38 0.03 200);
+  --border: oklch(0.38 0.03 200);
+  --input: oklch(0.44 0.03 200);
   --ring: oklch(0.75 0.12 185);
   --chart-1: oklch(0.72 0.17 38);
   --chart-2: oklch(0.75 0.12 185);
@@ -150,7 +163,14 @@
   --sidebar-ring: oklch(0.75 0.12 185);
   --hero-gradient: radial-gradient(120% 90% at 85% 0%, oklch(0.72 0.17 38 / 0.18), transparent 60%),
     radial-gradient(90% 80% at 0% 100%, oklch(0.75 0.12 185 / 0.16), transparent 60%);
-  --shadow-soft: 0 1px 2px oklch(0 0 0 / 0.3), 0 12px 32px -12px oklch(0 0 0 / 0.55);
+  --surface-1: oklch(0.245 0.025 200);
+  --surface-2: oklch(0.29 0.028 200);
+  --surface-3: oklch(0.335 0.03 200);
+  --elevation-1: 0 1px 2px oklch(0 0 0 / 0.35), 0 8px 20px -10px oklch(0 0 0 / 0.6);
+  --elevation-2: 0 1px 2px oklch(0 0 0 / 0.4), 0 6px 12px -6px oklch(0 0 0 / 0.45), 0 20px 28px -14px oklch(0 0 0 / 0.65);
+  --elevation-3: 0 2px 4px oklch(0 0 0 / 0.4), 0 14px 28px -10px oklch(0 0 0 / 0.55), 0 40px 60px -24px oklch(0 0 0 / 0.7);
+  --shadow-soft: var(--elevation-1);
+  --gradient-premium: linear-gradient(135deg, oklch(0.75 0.12 185), oklch(0.55 0.1 195));
 }
 
 @layer base {
@@ -162,9 +182,25 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.6;
   }
   h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.02em; }
 }
 
 @utility bg-hero { background-image: var(--hero-gradient); }
 
+
+@utility bg-premium { background-image: var(--gradient-premium); }
+@utility money { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+@utility pb-safe-nav { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .motion-lift:hover, .motion-lift:focus-visible { transform: none !important; }
+}
