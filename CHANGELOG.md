@@ -1,6 +1,9 @@
 # Changelog
 
-
+## Descubre — aviso de contenido ilustrativo (14 nov 2026)
+- El aviso de las tarjetas ilustrativas ya no anuncia los lugares reales de Google como algo futuro: dirige a la búsqueda de Google, que ya funciona.
+- Se conservan las cuatro tarjetas de inspiración, su etiqueta "Ilustrativo" y el espacio reservado para la ficha oficial de Google (ADR-003).
+- Sin cambios en la integración de Google Places, la base de datos, RLS ni autenticación.
 
 ## Feature 003 — Google Places en Descubre (13 nov 2026)
 - Descubre: buscador real con Places UI Kit Essentials (autocompletar básico + ficha oficial de Google). Atribuciones intactas, sin mapa.
