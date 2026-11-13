@@ -175,6 +175,7 @@ Acceso, RLS, planes y participantes, invitaciones, gastos y balances, liquidacio
 - Las pruebas actuales siguen pasando y los cálculos no cambian.
 
 ## Resultado de implementación (13 nov 2026)
+Actualización visual posterior: las cuatro tarjetas de inspiración usan fotografías Pexels con licencia y créditos, aviso ES/EN «imágenes de inspiración, no fichas Google Places», sin etiquetas ilustrativas en esta sección. Búsqueda Google intacta. Procedencia y resultados: [discover-photography.md](discover-photography.md).
 **Hecho:** tokens (§4.1), tipografía y dígitos tabulares (§4.2), motion y reduced-motion (§4.3), header y menú móvil, barra inferior (R2.3), portada centrada de una columna (maqueta retirada por petición posterior), Descubre con contenido "Ilustrativo", crear plan en 3 pasos (R2.2). Contraste de §4.1 aplicado. Integración posterior autorizada: Google Places UI Kit Essentials en Descubre y nombre sugerido en el asistente; configuración, pruebas y límites en [google-places-integration.md, §12](google-places-integration.md#12-configuración-y-estado-implementado-13-nov-2026-utc).
 **Pendiente:** vista de plan (A8–A11), autenticación a dos columnas (A6), estados vacíos y revisión de cada pantalla en ES/EN y en los tres temas.
 **Verificado:** 15 tests; capturas a 390 px (claro) y 1280 px (oscuro) de portada y Descubre; asistente abierto desde "+ Plan" con sesión iniciada, sin errores. No se creó ningún plan real.

@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Info } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
-import { SceneIllustration, type Scene } from "@/components/discover/illustration";
+import { INSPIRATION_PHOTOS } from "@/components/discover/inspiration-photos";
 import type { MessageKey } from "@/lib/i18n/dictionaries";
 import { PlaceSearch } from "@/components/discover/place-search";
 
@@ -19,13 +19,6 @@ export const Route = createFileRoute("/discover")({
   component: Discover,
 });
 
-const CARDS: { scene: Scene; n: 1 | 2 | 3 | 4 }[] = [
-  { scene: "cove", n: 1 },
-  { scene: "market", n: 2 },
-  { scene: "viewpoint", n: 3 },
-  { scene: "dinner", n: 4 },
-];
-
 function Discover() {
   const { t } = useI18n();
   return (
@@ -37,24 +30,29 @@ function Discover() {
       <h2 className="mt-10 text-2xl font-bold">{t("discover.ideas")}</h2>
       <p role="note" className="mt-5 flex items-start gap-2 rounded-2xl border border-border bg-surface-3 px-4 py-3 text-sm">
         <Info className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
-        {t("discover.illustrativeNote")}
+        {t("discover.inspirationNote")}
       </p>
       <ul className="mt-8 grid gap-5 sm:grid-cols-2">
-        {CARDS.map(({ scene, n }) => (
-          <li key={scene} className="overflow-hidden rounded-3xl border border-border bg-surface-1 shadow-elevation-1">
-            <div className="relative aspect-[16/10]">
-              <SceneIllustration scene={scene} />
-              <span className="absolute left-3 top-3 rounded-full bg-background/90 px-2.5 py-1 text-xs font-semibold text-foreground shadow-elevation-1">
-                {t("discover.illustrative")}
-              </span>
+        {INSPIRATION_PHOTOS.map(({ n, image, small, photographer, source }) => (
+          <li key={n} className="group overflow-hidden rounded-3xl border border-border bg-surface-1 shadow-elevation-1">
+            <div className="aspect-[16/10] overflow-hidden bg-surface-3">
+              <img
+                src={image.url}
+                srcSet={`${small.url} 600w, ${image.url} 1200w`}
+                sizes="(min-width: 1024px) 480px, (min-width: 640px) calc((100vw - 52px) / 2), calc(100vw - 32px)"
+                alt={t(`discover.photo${n}` as MessageKey)}
+                width={1200}
+                height={750}
+                loading="lazy"
+                decoding="async"
+                className="h-full w-full object-cover transition-transform duration-200 ease-out motion-safe:group-hover:scale-[1.03]"
+              />
             </div>
             <div className="p-5">
               <h2 className="text-xl font-bold">{t(`discover.c${n}` as MessageKey)}</h2>
               <p className="mt-1 text-sm text-muted-foreground">{t(`discover.c${n}t` as MessageKey)}</p>
               {/* Reserved for Places UI Kit (ADR-003): nothing of ours is drawn over Google's card. */}
-              <div data-google-slot className="mt-4 rounded-xl border border-dashed border-border px-3 py-2 text-xs text-muted-foreground">
-                {t("discover.googleSlot")}
-              </div>
+              <div data-google-slot />
               <Link
                 to="/app"
                 search={{ go: "places" }}
@@ -63,6 +61,12 @@ function Discover() {
                 {t("discover.use")}
                 <ArrowRight className="size-4" aria-hidden />
               </Link>
+              <p className="mt-3 border-t border-border pt-3 text-xs text-muted-foreground">
+                {t("discover.photoCredit")} {" "}
+                <a href={source} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                  {photographer} · Pexels
+                </a>
+              </p>
             </div>
           </li>
         ))}

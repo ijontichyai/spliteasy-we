@@ -1,5 +1,10 @@
 # Changelog
 
+## Descubre — fotografías de inspiración (13 nov 2026, UTC)
+- Sustituidas las cuatro ilustraciones por fotografías reales con licencia Pexels y créditos enlazados: playa mediterránea al amanecer, mercado local, montañas al atardecer y cena bajo luces cálidas.
+- WebP de 600/1200 px servidos por Lovable Assets, carga diferida y recorte 16:10. Aviso y textos alternativos ES/EN; retiradas las etiquetas ilustrativas de esta sección.
+- Conservados los enlaces de las tarjetas, temas y búsqueda Google sin modificaciones. Procedencia y licencia: docs/architecture/discover-photography.md. Sin publicar.
+
 ## Descubre — revisión de tarjetas propias (13 nov 2026, UTC)
 - Revisión autorizada del uso EEE: compartir un lugar en un plan y mostrar un catálogo independiente de inspiración no tienen automáticamente el mismo alcance permitido. Pendiente confirmación escrita de Google o revisión jurídica antes de sustituir los componentes oficiales por tarjetas propias.
 - Confirmado documentalmente que Place Search existe en Essentials; múltiples resultados no requieren necesariamente Pro.
