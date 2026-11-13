@@ -40,6 +40,9 @@ export function SiteHeader() {
               </button>
             ))}
           </div>
+          <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
+            <Link to="/demo">{t("nav.demo")}</Link>
+          </Button>
           {session ? (
             <>
               <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">

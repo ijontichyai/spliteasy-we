@@ -42,12 +42,16 @@ function AuthPage() {
       if (mode === "signin") {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) return void toast.error(t("auth.errorCredentials"));
-        navigate({ to: "/app" });
+        const pending = sessionStorage.getItem("spliteasy.pendingJoin");
+        if (pending) {
+          sessionStorage.removeItem("spliteasy.pendingJoin");
+          navigate({ to: "/join/$token", params: { token: pending } });
+        } else navigate({ to: "/app" });
       } else if (mode === "signup") {
         const { error } = await supabase.auth.signUp({
           email,
           password,
-          options: { emailRedirectTo: window.location.origin, data: { display_name: name.trim(), locale } },
+          options: { emailRedirectTo: sessionStorage.getItem("spliteasy.pendingJoin") ? `${window.location.origin}/join/${sessionStorage.getItem("spliteasy.pendingJoin")}` : window.location.origin, data: { display_name: name.trim(), locale } },
         });
         if (error) return void toast.error(error.code === "weak_password" ? t("auth.errorWeakPassword") : t("auth.errorGeneric"));
         setNotice(t("auth.checkEmail"));

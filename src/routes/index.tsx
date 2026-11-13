@@ -32,9 +32,14 @@ function Home() {
         <div className="mx-auto max-w-5xl px-4 pb-20 pt-16 sm:pt-24">
           <h1 className="max-w-3xl text-4xl font-bold leading-[1.05] sm:text-6xl">{t("home.title")}</h1>
           <p className="mt-5 max-w-xl text-lg text-muted-foreground">{t("home.subtitle")}</p>
-          <Button asChild size="lg" className="mt-8 rounded-full px-7">
-            <Link to={session ? "/app" : "/auth"}>{session ? t("home.ctaSignedIn") : t("home.cta")}</Link>
-          </Button>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Button asChild size="lg" className="rounded-full px-7">
+              <Link to={session ? "/app" : "/auth"}>{session ? t("home.ctaSignedIn") : t("home.cta")}</Link>
+            </Button>
+            <Button asChild size="lg" variant="outline" className="rounded-full px-7">
+              <Link to="/demo">{t("home.demo")}</Link>
+            </Button>
+          </div>
         </div>
       </section>
       <section className="mx-auto grid max-w-5xl gap-4 px-4 py-14 sm:grid-cols-3">
