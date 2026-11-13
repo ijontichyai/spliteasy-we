@@ -6,7 +6,7 @@ import { useI18n } from "@/lib/i18n/context";
 import { planQuery } from "@/lib/plans";
 import { fromCents } from "@/lib/money";
 import { PlanView } from "@/components/plan/plan-view";
-import type { PlanActions } from "@/components/plan/types";
+import { isPlanTab, type PlanActions, type PlanTab } from "@/components/plan/types";
 
 export const Route = createFileRoute("/_authenticated/plans/$planId")({
   head: () => ({
@@ -19,6 +19,8 @@ export const Route = createFileRoute("/_authenticated/plans/$planId")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
+  validateSearch: (s: Record<string, unknown>): { tab?: PlanTab } =>
+    isPlanTab(s.tab) ? { tab: s.tab } : {},
   loader: ({ context, params }) => context.queryClient.ensureQueryData(planQuery(params.planId)),
   errorComponent: ({ error }) => <p className="p-8 text-destructive">{error instanceof Error ? error.message : String(error)}</p>,
   notFoundComponent: () => <p className="p-8">404</p>,
@@ -33,6 +35,7 @@ async function rpc(fn: string, args: Record<string, unknown>) {
 
 function PlanPage() {
   const { planId } = Route.useParams();
+  const { tab } = Route.useSearch();
   const { t } = useI18n();
   const qc = useQueryClient();
   const { data } = useSuspenseQuery(planQuery(planId));
@@ -60,7 +63,7 @@ function PlanPage() {
   return (
     <main className="mx-auto max-w-5xl px-4 py-6 sm:py-10">
       <Link to="/app" className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"><ChevronLeft className="size-4" />{t("plan.back")}</Link>
-      <PlanView data={data} actions={actions} />
+      <PlanView data={data} actions={actions} initialTab={tab} />
     </main>
   );
 }

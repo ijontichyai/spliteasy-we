@@ -46,7 +46,13 @@ function AuthPage() {
         if (pending) {
           sessionStorage.removeItem("spliteasy.pendingJoin");
           navigate({ to: "/join/$token", params: { token: pending } });
-        } else navigate({ to: "/app" });
+        } else {
+          const next = sessionStorage.getItem("spliteasy.afterLogin");
+          sessionStorage.removeItem("spliteasy.afterLogin");
+          // Only same-site paths; never an external URL.
+          if (next && next.startsWith("/") && !next.startsWith("//")) navigate({ href: next });
+          else navigate({ to: "/app" });
+        }
       } else if (mode === "signup") {
         const { error } = await supabase.auth.signUp({
           email,

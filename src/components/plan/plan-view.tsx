@@ -28,7 +28,7 @@ export function Avatar({ name, i }: { name: string; i: number }) {
   );
 }
 
-export function PlanView({ data, actions }: { data: PlanData; actions: PlanActions }) {
+export function PlanView({ data, actions, initialTab }: { data: PlanData; actions: PlanActions; initialTab?: PlanTab }) {
   const { t, locale } = useI18n();
   const { plan, members, me } = data;
   const readOnly = plan.archived;
@@ -77,7 +77,7 @@ export function PlanView({ data, actions }: { data: PlanData; actions: PlanActio
         {readOnly && <p className="mt-4 rounded-xl bg-secondary px-3 py-2 text-sm">{t("plan.readOnly")}</p>}
       </section>
 
-      <Tabs defaultValue="expenses" className="mt-6">
+      <Tabs defaultValue={initialTab ?? "expenses"} className="mt-6">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="people"><Users className="mr-1 hidden size-4 sm:inline" />{t("tab.people")}</TabsTrigger>
           <TabsTrigger value="places"><MapPin className="mr-1 hidden size-4 sm:inline" />{t("tab.places")}</TabsTrigger>
