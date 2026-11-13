@@ -20,7 +20,7 @@ export const Route = createFileRoute("/_authenticated/plans/$planId")({
     ],
   }),
   validateSearch: (s: Record<string, unknown>): { tab?: PlanTab } =>
-    isPlanTab(s.tab) ? { tab: s.tab } : {},
+    isPlanTab(s["tab"]) ? { tab: s["tab"] } : {},
   loader: ({ context, params }) => context.queryClient.ensureQueryData(planQuery(params.planId)),
   errorComponent: ({ error }) => <p className="p-8 text-destructive">{error instanceof Error ? error.message : String(error)}</p>,
   notFoundComponent: () => <p className="p-8">404</p>,

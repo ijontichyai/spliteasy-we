@@ -25,7 +25,7 @@ export const Route = createFileRoute("/_authenticated/app")({
     ],
   }),
   validateSearch: (s: Record<string, unknown>): { go?: "places" | "expenses" } =>
-    s.go === "places" || s.go === "expenses" ? { go: s.go } : {},
+    s["go"] === "places" || s["go"] === "expenses" ? { go: s["go"] } : {},
   loader: ({ context }) =>
     Promise.all([
       context.queryClient.ensureQueryData(myProfileQuery()),

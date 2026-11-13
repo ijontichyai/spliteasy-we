@@ -28,7 +28,7 @@ export function Avatar({ name, i }: { name: string; i: number }) {
   );
 }
 
-export function PlanView({ data, actions, initialTab }: { data: PlanData; actions: PlanActions; initialTab?: PlanTab }) {
+export function PlanView({ data, actions, initialTab }: { data: PlanData; actions: PlanActions; initialTab?: PlanTab | undefined }) {
   const { t, locale } = useI18n();
   const { plan, members, me } = data;
   const readOnly = plan.archived;
