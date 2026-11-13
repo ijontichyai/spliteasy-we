@@ -175,6 +175,13 @@ Acceso, RLS, planes y participantes, invitaciones, gastos y balances, liquidacio
 - Las pruebas actuales siguen pasando y los cálculos no cambian.
 
 ## Resultado de implementación (13 nov 2026)
-**Hecho:** tokens (§4.1), tipografía y dígitos tabulares (§4.2), motion y reduced-motion (§4.3), header y menú móvil, barra inferior (R2.3), portada con maqueta (A1–A4), Descubre con contenido "Ilustrativo" y hueco para Google (R2.1), crear plan en 3 pasos (R2.2). Contraste de §4.1 aplicado.
+**Hecho:** tokens (§4.1), tipografía y dígitos tabulares (§4.2), motion y reduced-motion (§4.3), header y menú móvil, barra inferior (R2.3), portada centrada de una columna (maqueta retirada por petición posterior), Descubre con contenido "Ilustrativo", crear plan en 3 pasos (R2.2). Contraste de §4.1 aplicado. Integración posterior autorizada: Google Places UI Kit Essentials en Descubre y nombre sugerido en el asistente; configuración, pruebas y límites en [google-places-integration.md, §12](google-places-integration.md#12-configuración-y-estado-implementado-13-nov-2026-utc).
 **Pendiente:** vista de plan (A8–A11), autenticación a dos columnas (A6), estados vacíos y revisión de cada pantalla en ES/EN y en los tres temas.
 **Verificado:** 15 tests; capturas a 390 px (claro) y 1280 px (oscuro) de portada y Descubre; asistente abierto desde "+ Plan" con sesión iniciada, sin errores. No se creó ningún plan real.
+
+### Revisión de documentación y commits (13 nov 2026, UTC)
+- Las pruebas actuales vuelven a aprobar: 15/15 en 4 archivos.
+- Historial local observado: `fecbc1b` (Feature 004 layout), `2e9b139` (retirada de maqueta), `1adf8ff` (Google en Descubre), `b674397` (diagnóstico Places) y `6be099c7e0127808f94241d4eb74e671b41ac774` (aviso ilustrativo actualizado).
+- Antes de esta revisión documental, el árbol local estaba limpio. Rama interna de sesión: `edit/edt-6dc41808-6f25-4df1-be39-159d4419123f`; **no es prueba de la rama sincronizada en GitHub**.
+- No hay conexión de API GitHub accesible en esta sesión. Repositorio GitHub, rama sincronizada, hash remoto y estado de sincronización quedan sin verificar; comprobar en Project settings → Git. Lovable administra commits/sincronización automáticamente; no se ejecutan commit/push manuales.
+- Sin cambios de aplicación, credenciales, base de datos ni publicación en esta revisión. El hash anterior identifica el estado previo a esta actualización documental, no su futuro commit automático.
