@@ -49,7 +49,7 @@ function AuthPage() {
           password,
           options: { emailRedirectTo: window.location.origin, data: { display_name: name.trim(), locale } },
         });
-        if (error) return void toast.error(error.message || t("auth.errorGeneric"));
+        if (error) return void toast.error(error.code === "weak_password" ? t("auth.errorWeakPassword") : t("auth.errorGeneric"));
         setNotice(t("auth.checkEmail"));
       } else {
         await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/reset-password` });
