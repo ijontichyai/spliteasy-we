@@ -24,9 +24,11 @@ export const Route = createFileRoute("/_authenticated/app")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
-  validateSearch: (s: Record<string, unknown>): { go?: "places" | "expenses"; new?: boolean } => ({
+  validateSearch: (s: Record<string, unknown>): { go?: "places" | "expenses"; new?: boolean; placeId?: string; placeName?: string } => ({
     ...(s["go"] === "places" || s["go"] === "expenses" ? { go: s["go"] } : {}),
     ...(s["new"] === true || s["new"] === "true" ? { new: true } : {}),
+    ...(typeof s["placeId"] === "string" && s["placeId"].length <= 300 ? { placeId: s["placeId"] } : {}),
+    ...(typeof s["placeName"] === "string" ? { placeName: s["placeName"].slice(0, 120) } : {}),
   }),
   loader: ({ context }) =>
     Promise.all([
@@ -46,16 +48,18 @@ function AppHome() {
   const { data: profile } = useSuspenseQuery(myProfileQuery());
   const { data: limits } = useSuspenseQuery(freeLimitsQuery());
   const { data: plans } = useSuspenseQuery(myPlansQuery());
-  const { go, new: wantsNew } = Route.useSearch();
+  const { go, new: wantsNew, placeName } = Route.useSearch();
+  const [suggestedName, setSuggestedName] = useState("");
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   // "+ Plan" in the bottom bar lands here with ?new=true: open the wizard once.
   useEffect(() => {
     if (wantsNew) {
       setOpen(true);
+      if (placeName) setSuggestedName(placeName);
       navigate({ to: "/app", search: go ? { go } : {}, replace: true });
     }
-  }, [wantsNew, go, navigate]);
+  }, [wantsNew, go, placeName, navigate]);
   const activePlans = plans.filter((p) => !p.archived);
   // Coming from a home card with exactly one active plan: open that section directly.
   useEffect(() => {
@@ -77,7 +81,7 @@ function AppHome() {
         {!open && <Button onClick={() => setOpen(true)} disabled={atLimit}><Plus className="size-4" />{t("app.newPlan")}</Button>}
       </div>
       {atLimit && <p className="mt-3 text-sm text-muted-foreground">{t("app.limitReached")}</p>}
-      {open && <CreatePlan onDone={() => setOpen(false)} />}
+      {open && <CreatePlan key={suggestedName} initialName={suggestedName} onDone={() => setOpen(false)} />}
       {go && activePlans.length > 1 && !open && (
         <p role="status" className="mt-6 rounded-2xl bg-secondary px-4 py-3 text-sm text-secondary-foreground">
           {t(go === "places" ? "app.pickPlanPlaces" : "app.pickPlanExpenses")}
@@ -113,12 +117,12 @@ function AppHome() {
   );
 }
 
-function CreatePlan({ onDone }: { onDone: () => void }) {
+function CreatePlan({ onDone, initialName = "" }: { onDone: () => void; initialName?: string }) {
   const { t } = useI18n();
   const qc = useQueryClient();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
-  const [f, setF] = useState({ name: "", type: "getaway" as PlanType, start: "", end: "", city: "", budget: "" });
+  const [f, setF] = useState({ name: initialName, type: "getaway" as PlanType, start: "", end: "", city: "", budget: "" });
   const [busy, setBusy] = useState(false);
   const steps = [t("wizard.idea"), t("wizard.dates"), t("wizard.invite")];
   const create = async (invite: boolean) => {
