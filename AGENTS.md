@@ -30,3 +30,5 @@ use the editor.
 <!-- LOVABLE:END -->
 
 - Architecture source of truth: docs/architecture/phase-01.md (approved Phase 01 design); multi-row financial/invitation/archive operations go through transactional DB functions, never several client calls.
+- Auth: email/password only with mandatory email confirmation; profiles created only by signup trigger; no anon grants on any table (see ADR-002).
+- i18n: typed dictionaries in src/lib/i18n (es default); all locales must share keys (enforced by test).

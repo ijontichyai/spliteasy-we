@@ -47,7 +47,7 @@ function ResetPassword() {
     setBusy(true);
     const { error } = await supabase.auth.updateUser({ password });
     setBusy(false);
-    if (error) return void toast.error(error.message || t("auth.errorGeneric"));
+    if (error) return void toast.error(error.code === "weak_password" ? t("auth.errorWeakPassword") : t("auth.errorGeneric"));
     toast.success(t("reset.done"));
     navigate({ to: "/app" });
   }
