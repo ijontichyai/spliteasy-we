@@ -5,6 +5,10 @@ export const DEFAULT_LOCALE: Locale = "es";
 
 const es = {
   "brand.tagline": "Plan, Go & Share",
+  "theme.label": "Tema",
+  "theme.light": "Claro",
+  "theme.dark": "Oscuro",
+  "theme.system": "Sistema",
   "nav.signIn": "Entrar",
   "nav.signOut": "Cerrar sesión",
   "nav.myPlans": "Mis planes",
@@ -187,6 +191,10 @@ export type MessageKey = keyof typeof es;
 
 const en: Record<MessageKey, string> = {
   "brand.tagline": "Plan, Go & Share",
+  "theme.label": "Theme",
+  "theme.light": "Light",
+  "theme.dark": "Dark",
+  "theme.system": "System",
   "nav.signIn": "Sign in",
   "nav.signOut": "Sign out",
   "nav.myPlans": "My plans",
