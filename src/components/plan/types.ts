@@ -39,3 +39,9 @@ export type PlanData = {
   me: string; plan: PlanVM; members: MemberVM[]; places: PlaceVM[]; expenses: ExpenseVM[];
   settlements: SettlementVM[]; invitations?: InvitationVM[]; memberLimit: number | null;
 };
+
+export const PLAN_TABS = ["people", "places", "expenses", "balances"] as const;
+export type PlanTab = (typeof PLAN_TABS)[number];
+export function isPlanTab(v: unknown): v is PlanTab {
+  return typeof v === "string" && (PLAN_TABS as readonly string[]).includes(v);
+}

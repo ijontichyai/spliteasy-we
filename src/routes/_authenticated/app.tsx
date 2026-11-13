@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import { Compass, Plus, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -24,6 +24,8 @@ export const Route = createFileRoute("/_authenticated/app")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
+  validateSearch: (s: Record<string, unknown>): { go?: "places" | "expenses" } =>
+    s["go"] === "places" || s["go"] === "expenses" ? { go: s["go"] } : {},
   loader: ({ context }) =>
     Promise.all([
       context.queryClient.ensureQueryData(myProfileQuery()),
@@ -42,7 +44,17 @@ function AppHome() {
   const { data: profile } = useSuspenseQuery(myProfileQuery());
   const { data: limits } = useSuspenseQuery(freeLimitsQuery());
   const { data: plans } = useSuspenseQuery(myPlansQuery());
+  const { go } = Route.useSearch();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const activePlans = plans.filter((p) => !p.archived);
+  // Coming from a home card with exactly one active plan: open that section directly.
+  useEffect(() => {
+    const only = activePlans.length === 1 ? activePlans[0] : undefined;
+    if (go && only) {
+      navigate({ to: "/plans/$planId", params: { planId: only.id }, search: { tab: go }, replace: true });
+    }
+  }, [go, activePlans, navigate]);
   const activeOwned = plans.filter((p) => p.ownerId === profile.id && !p.archived).length;
   const atLimit = limits.max_active_owned_plans != null && activeOwned >= limits.max_active_owned_plans;
 
@@ -57,11 +69,17 @@ function AppHome() {
       </div>
       {atLimit && <p className="mt-3 text-sm text-muted-foreground">{t("app.limitReached")}</p>}
       {open && <CreatePlan onDone={() => setOpen(false)} />}
+      {go && activePlans.length > 1 && !open && (
+        <p role="status" className="mt-6 rounded-2xl bg-secondary px-4 py-3 text-sm text-secondary-foreground">
+          {t(go === "places" ? "app.pickPlanPlaces" : "app.pickPlanExpenses")}
+        </p>
+      )}
 
       {plans.length === 0 && !open ? (
         <div className="mt-8 flex flex-col items-center rounded-3xl border border-dashed border-border bg-card px-6 py-16 text-center">
           <Compass className="size-10 text-accent" aria-hidden />
-          <p className="mt-4 max-w-sm text-muted-foreground">{t("app.empty")}</p>
+          <p className="mt-4 max-w-sm text-muted-foreground">{t(go ? "app.noPlanForSection" : "app.empty")}</p>
+          {!atLimit && <Button className="mt-5" onClick={() => setOpen(true)}><Plus className="size-4" />{t("app.createFirst")}</Button>}
           <p className="mt-6 rounded-full bg-secondary px-4 py-1.5 text-xs text-secondary-foreground">
             {t("app.freeLimits", { plans: limits.max_active_owned_plans ?? "∞", members: limits.max_members_per_plan ?? "∞" })}
           </p>
@@ -70,7 +88,7 @@ function AppHome() {
         <ul className="mt-8 grid gap-4 sm:grid-cols-2">
           {plans.map((p) => (
             <li key={p.id}>
-              <Link to="/plans/$planId" params={{ planId: p.id }} className={`block rounded-3xl border border-border bg-card p-5 shadow-soft transition-transform hover:-translate-y-0.5 ${p.archived ? "opacity-60" : ""}`}>
+              <Link to="/plans/$planId" params={{ planId: p.id }} search={go ? { tab: go } : {}} className={`block rounded-3xl border border-border bg-card p-5 shadow-soft transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${p.archived ? "opacity-60" : ""}`}>
                 <p className="text-xs font-medium uppercase tracking-wider text-accent">{t(`type.${p.type}`)}{p.city ? ` · ${p.city}` : ""}</p>
                 <h2 className="mt-1 text-xl font-semibold">{p.name}</h2>
                 <p className="mt-3 flex items-center gap-1.5 text-sm text-muted-foreground">

@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { CalendarHeart, MapPin, Receipt } from "lucide-react";
+import { ArrowRight, CalendarHeart, MapPin, Receipt } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n/context";
 import { useSession } from "@/hooks/use-session";
@@ -22,9 +22,9 @@ function Home() {
   const { t } = useI18n();
   const { session } = useSession();
   const pillars = [
-    { icon: CalendarHeart, title: t("home.plan"), text: t("home.planText") },
-    { icon: MapPin, title: t("home.go"), text: t("home.goText") },
-    { icon: Receipt, title: t("home.share"), text: t("home.shareText") },
+    { icon: CalendarHeart, title: t("home.plan"), text: t("home.planText"), search: {} },
+    { icon: MapPin, title: t("home.go"), text: t("home.goText"), search: { go: "places" as const } },
+    { icon: Receipt, title: t("home.share"), text: t("home.shareText"), search: { go: "expenses" as const } },
   ];
   return (
     <main>
@@ -43,12 +43,21 @@ function Home() {
         </div>
       </section>
       <section className="mx-auto grid max-w-5xl gap-4 px-4 py-14 sm:grid-cols-3">
-        {pillars.map(({ icon: Icon, title, text }) => (
-          <article key={title} className="rounded-2xl border border-border bg-card p-6 shadow-soft">
+        {pillars.map(({ icon: Icon, title, text, search }) => (
+          <Link
+            key={title}
+            to="/app"
+            search={search}
+            className="group block cursor-pointer rounded-2xl border border-border bg-card p-6 shadow-soft transition-all duration-200 hover:-translate-y-1 hover:border-primary/60 focus-visible:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:translate-y-0"
+          >
             <Icon className="size-6 text-accent" aria-hidden />
             <h2 className="mt-4 text-xl font-semibold">{title}</h2>
             <p className="mt-1 text-sm text-muted-foreground">{text}</p>
-          </article>
+            <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary">
+              {t("home.cardOpen")}
+              <ArrowRight className="size-4 transition-transform group-hover:translate-x-1 group-focus-visible:translate-x-1" aria-hidden />
+            </span>
+          </Link>
         ))}
       </section>
     </main>
