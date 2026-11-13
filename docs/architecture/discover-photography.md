@@ -20,3 +20,8 @@ Todas las imágenes están disponibles gratuitamente bajo la [licencia Pexels](h
 - Los espacios `data-google-slot` se conservan vacíos; no se colocan datos editoriales sobre contenido Google.
 - Sin modificaciones en búsqueda Google, autenticación, planes, gastos, pagos ni esquema de base de datos. Sin publicación.
 - GitHub utiliza la sincronización automática de Lovable; el estado remoto, rama y commit no son verificables desde esta sesión.
+
+## Verificación
+- 15/15 pruebas automatizadas aprobadas; compilación automática `build OK`.
+- Fotografías cargadas y revisadas a 1280 px en español/claro y 390 px en inglés/oscuro: cuatro imágenes, créditos legibles, sin desbordamiento horizontal y enlaces conservados. Cada acción probada sin sesión conduce a la continuación de inicio de sesión; no se creó ningún plan.
+- Google se bloqueó únicamente en el navegador de pruebas para evitar peticiones no soportadas en el entorno de verificación. Su código y secreto no se modificaron; el funcionamiento Google no se volvió a validar. Validar la búsqueda en el Preview autorizado.
