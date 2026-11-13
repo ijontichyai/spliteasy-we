@@ -143,3 +143,33 @@ Cada gasto y cada lugar lleva su icono de categoría dentro de un contenedor red
 - Cambiar tokens afecta a todas las pantallas a la vez: por eso la etapa 1 es solo de tokens y se revisa antes de seguir.
 - El modo oscuro es el más expuesto (A5); se revisa con capturas propias, no de memoria.
 - Ningún riesgo económico: no se activan servicios.
+
+## Revisión 2 — Aprobación con ajustes (13 nov 2026)
+
+**Estado:** dirección "Papel y Marea" aprobada. Diseño cerrado a nivel documental. **Implementación NO autorizada.**
+
+**North Star:** "Los amigos convierten cualquier idea en un plan que viven juntos." Filosofía: PLAN → GO → SHARE · LESS TYPING. MORE LIVING.
+
+### R2.1 Descubre
+- Experiencia inmersiva: imagen protagonista y tarjetas grandes.
+- Sin Google Places: ilustraciones propias o fotos con licencia adecuada, **solo para demostración**.
+- Todo el contenido ilustrativo lleva la etiqueta visible "Ilustrativo" / "Illustrative" y nunca se presenta como dato real.
+- Los contenedores de las tarjetas reservan un espacio para el componente oficial de Places UI Kit. Ese espacio conserva la presentación y la atribución de Google, y no se superpone nada propio (ADR-003).
+
+### R2.2 Crear plan
+- Tres pasos: Idea → Fechas → Invitar.
+- Solo el nombre es obligatorio. Fechas e invitaciones se pueden saltar ("Lo decido después") y completarse más tarde desde el plan.
+
+### R2.3 Navegación móvil
+- Barra inferior con Inicio, Descubre, Planes y Perfil.
+- Botón central "+ Plan" elevado, con objetivo táctil de 44 px o más y etiqueta accesible.
+- Espacio inferior reservado (con safe-area) para que nunca tape contenido.
+
+### R2.4 Funciones que no cambian
+Acceso, RLS, planes y participantes, invitaciones, gastos y balances, liquidaciones, demo de cuatro amigos, ES/EN y los temas claro, oscuro y sistema.
+
+### R2.5 Criterios de aceptación añadidos
+- El contenido ilustrativo se distingue siempre de los datos reales.
+- Se puede crear un plan escribiendo solo el nombre.
+- La barra inferior no tapa contenido a 390 px y se usa con teclado y lector de pantalla.
+- Las pruebas actuales siguen pasando y los cálculos no cambian.

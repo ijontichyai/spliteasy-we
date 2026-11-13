@@ -44,3 +44,11 @@ es comercial y necesita percibirse premium sin gastar dinero.
 - La personalización de Google Places (Feature 003) sigue limitada a lo que permite Google;
   lo propio de SplitEasy mantiene esta identidad.
 - Coste: 0 €. No se activa ningún servicio ni se modifican datos.
+
+## Addendum (13 nov 2026) — Aprobación con ajustes
+- Dirección "Papel y Marea" **aprobada** y alineada con la North Star (PLAN → GO → SHARE).
+- Contenido ilustrativo (ilustraciones propias o fotos con licencia) solo para demostración, siempre con la etiqueta "Ilustrativo".
+- Las tarjetas de Descubre se preparan para Places UI Kit respetando su presentación y atribución.
+- Crear plan: tres pasos y solo el nombre es obligatorio.
+- Móvil: barra inferior de 4 pestañas con botón central "+ Plan".
+- Implementación por etapas, cada una con autorización expresa, empezando por el sistema de diseño.

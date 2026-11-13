@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-11-13 — Feature 004 (diseño cerrado con ajustes, sin implementación)
+- Aprobada la dirección "Papel y Marea". Ajustes: Descubre inmersivo con contenido ilustrativo etiquetado, contenedores listos para Places UI Kit, crear plan con solo el nombre, barra inferior de 4 pestañas con "+ Plan".
+- Documentos: phase-04-premium.md (revisión 2) y ADR-004 (addendum). Sin cambios en código ni en la base de datos.
+
 ## 2026-11-13 — Corrección de definición de producto (sin código)
 - Nueva meta: «Los amigos convierten cualquier idea en un plan que viven juntos.»
 - Nueva métrica principal: planes de grupo completados por al menos dos participantes cada mes.
