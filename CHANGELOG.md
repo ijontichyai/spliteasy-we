@@ -1,5 +1,11 @@
 # Changelog
 
+## Revisión técnica y Git — 13 nov 2026 (UTC)
+- Actualizada la documentación de Google Places: secreto por nombre (sin valor), APIs necesarias, orígenes exactos del editor/Preview/publicado, restricciones HTTP, cuotas y alertas.
+- Documentados los errores históricos y su causa, la confirmación del usuario y las limitaciones reales (incluida la no persistencia de `place_id`). 15/15 pruebas aprobadas de nuevo.
+- Comprobado historial local y árbol limpio previo a la documentación; repositorio, rama y commit remotos de GitHub sin verificar desde esta sesión. Ver docs/architecture/phase-04-premium.md.
+- Solo documentación; sin publicar ni modificar la integración operativa.
+
 ## Descubre — aviso de contenido ilustrativo (14 nov 2026)
 - El aviso de las tarjetas ilustrativas ya no anuncia los lugares reales de Google como algo futuro: dirige a la búsqueda de Google, que ya funciona.
 - Se conservan las cuatro tarjetas de inspiración, su etiqueta "Ilustrativo" y el espacio reservado para la ficha oficial de Google (ADR-003).

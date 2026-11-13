@@ -1,6 +1,6 @@
 # Feature 003 — Integración Google Places (diseño definitivo)
 
-**Estado:** diseño cerrado (13 nov 2026). Implementación **no autorizada**. Decisión: [ADR-003](../adr/ADR-003-google-places.md).
+**Estado:** diseño cerrado e integración parcial implementada con autorización posterior (13 nov 2026). Búsqueda operativa en Preview confirmada por el usuario; persistencia y funcionalidades restantes pendientes. Decisión: [ADR-003](../adr/ADR-003-google-places.md). Las secciones 3–10 describen el diseño objetivo; el estado real se detalla en §12.
 
 ## 1. Decisión
 - **Places UI Kit (JavaScript)**, componentes estándar (Essentials) siempre que sea posible.
@@ -85,7 +85,45 @@ Error, cuota o interruptor → mensaje claro, sin reintentos, sin pantalla en bl
 Buscar lugar conocido; seleccionar; datos reales; campos ausentes; añadir al plan; duplicados; favoritos; abrir Google Maps; ES/EN; 3 temas; móvil; errores de API; cuota agotada; claves no expuestas; aislamiento entre usuarios/planes; demo sin llamadas a Google. Sin respuestas falsas de Google.
 
 ## 11. Riesgos
-Personalización limitada al componente; límites de la app solo "suaves"; la vista previa de desarrollo no permite pruebas en vivo; términos y precios pueden cambiar.
+Personalización limitada al componente; límites de la app solo "suaves"; las pruebas en vivo requieren autorizar el origen real de Preview; términos y precios pueden cambiar.
+
+## 12. Configuración y estado implementado (13 nov 2026, UTC)
+
+### Código y credenciales
+- `src/lib/maps.functions.ts`: `getMapsBrowserKey` lee exclusivamente `process.env["Google_Maps_API_Key"]` dentro de la función del servidor. El valor se administra mediante los secretos del proyecto, nunca como literal en código o documentación.
+- Es una **clave de navegador**: Google Maps JavaScript la recibe necesariamente en el navegador. No es una credencial privada de servidor; su protección efectiva son las restricciones por sitio web y API. No usar una clave de servidor ni una cuenta de servicio en este secreto.
+- `src/components/discover/place-search.tsx`: carga diferida de Maps JavaScript (`loading=async`, `v=weekly`, idioma inicial ES/EN, `region=ES`), seguida de `google.maps.importLibrary("places")`.
+- Componentes oficiales Essentials: `gmp-basic-place-autocomplete`, `gmp-place-details`, `gmp-place-details-place-request` y `gmp-place-all-content`. Fotografías y atribuciones permanecen dentro de Google; no se añade mapa ni componentes Advanced/Pro.
+- `gmp-select` conserva el identificador seleccionado en memoria; `gmp-load` obtiene el nombre sugerido. La acción abre `/app` con `new`, `placeId` y `placeName`; el nombre es editable y las fechas/invitaciones opcionales.
+- Los estados de carga/error y los eventos `gmp-error`/`gmp-requesterror` están conectados. Se mantienen las cuatro ilustraciones etiquetadas y el alta manual de lugares.
+
+### Google Cloud: configuración comunicada por el propietario
+En **APIs y servicios → Biblioteca**, habilitar **Maps JavaScript API**, **Places API (New)** y **Places UI Kit**. En **APIs y servicios → Credenciales → clave → Restricciones de API**, autorizar estas tres APIs; en **Restricciones de aplicaciones**, seleccionar **Sitios web (referentes HTTP)**.
+
+Usar los orígenes exactos necesarios, con comodín de ruta:
+```text
+https://306db1f6-82ab-49c3-a246-dc7ba7faa244.lovableproject.com/*
+https://id-preview--306db1f6-82ab-49c3-a246-dc7ba7faa244.lovable.app/*
+https://spliteasy-we.lovable.app/*
+```
+El primer origen corresponde al Preview dentro del editor; el segundo, al Preview compartible. No son intercambiables. El tercero prepara el sitio publicado, pero **no autoriza ni implica publicar**. Preferir esta lista exacta frente a permitir todos los subdominios de Lovable. Revisarla si cambia el origen.
+
+En **Google Maps Platform → Cuotas**, configurar límites duros según §6 y, en **Facturación → Presupuestos y alertas**, alertas de gasto. Los valores efectivos de cuotas, presupuesto, facturación y restricciones no se han leído desde Google Cloud: su configuración está **sin verificar independientemente**. Las alertas no detienen el consumo y el nivel gratuito no garantiza coste cero.
+
+### Diagnóstico y resultados de pruebas
+- Primer error observado: `The API is not activated on your project.` Faltaba habilitar **Places UI Kit**, además de las otras APIs.
+- Error posterior observado: `IP address, referer or application did not match any of the ones authorized for the supplied API key.` El referente real del editor era `https://306db1f6-82ab-49c3-a246-dc7ba7faa244.lovableproject.com`, distinto del Preview compartible autorizado.
+- Diagnóstico previo con peticiones por origen: editor → **403 Permission denied**; Preview compartible → resultados reales de cafeterías; origen publicado → aceptado. Son resultados históricos, no una consulta nueva en esta revisión.
+- Tras corregir las restricciones, el propietario confirmó que Google Places funciona. Las comprobaciones previas de interfaz a 390 px y 1280 px conservaron buscador, cuatro etiquetas ilustrativas y aviso actualizado, sin errores de consola. No equivalen a una prueba completa nueva de búsqueda/selección/creación real.
+- Revisión actual: **15 pruebas automatizadas aprobadas en 4 archivos** (i18n, temas, dinero y navegación). El escaneo de archivos rastreados no encontró patrones de claves Google, claves privadas ni claves secretas del backend; no es una auditoría exhaustiva de todo el historial.
+
+### Limitaciones conocidas
+- `place_id` viaja al asistente, pero **no se persiste en la base de datos**. No hay migración autorizada para ello; no afirmar que un plan creado conserva el vínculo con Google.
+- Favoritos Google, selector para añadir a planes existentes, categorías rápidas, tarjetas compactas en planes, interruptor `places_enabled` y contadores de uso son diseño pendiente, no funcionalidad implementada.
+- Las cuotas/alertas reales de Google Cloud no están verificadas; no hay protección dura de costes implementada en la app.
+- El cargador reutiliza una promesa global: cambiar el idioma después de cargar Google no recarga el idioma de Maps. No hay estado propio separado de «sin resultados» ni reintento explícito de errores del componente.
+- Pendiente una prueba nueva completa «cafeterías en Barcelona» → selección → asistente con el lugar correcto, en escritorio y móvil y con sesión, sin publicar para probar.
+- La sincronización GitHub solo puede confirmarse en **Project settings → Git**. Los remotos locales de esta sesión son internos de Lovable, no identifican el repositorio GitHub conectado ni su rama de sincronización.
 
 ## Fuentes
 - https://developers.google.com/maps/comms/eea/places
