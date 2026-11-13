@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-11-13 — Feature 003 (diseño cerrado, sin implementación)
+- Google Places mediante Places UI Kit (Essentials), Google Cloud propio, facturación EEE.
+- Documentado en docs/architecture/google-places-integration.md y ADR-003.
+- Sin activar servicios, sin migraciones ni cambios en la app.
+
 ## 2026-11-13 — UI Enhancement 002
 - Tarjetas de la portada interactivas: Planifica → Mis planes; Descubre → Lugares; Reparte → Gastos.
 - Con un plan activo se abre directamente; con varios se pide elegir; sin planes se ofrece crear uno.
