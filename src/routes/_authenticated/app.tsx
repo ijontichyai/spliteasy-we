@@ -50,8 +50,9 @@ function AppHome() {
   const activePlans = plans.filter((p) => !p.archived);
   // Coming from a home card with exactly one active plan: open that section directly.
   useEffect(() => {
-    if (go && activePlans.length === 1) {
-      navigate({ to: "/plans/$planId", params: { planId: activePlans[0].id }, search: { tab: go }, replace: true });
+    const only = activePlans.length === 1 ? activePlans[0] : undefined;
+    if (go && only) {
+      navigate({ to: "/plans/$planId", params: { planId: only.id }, search: { tab: go }, replace: true });
     }
   }, [go, activePlans, navigate]);
   const activeOwned = plans.filter((p) => p.ownerId === profile.id && !p.archived).length;
