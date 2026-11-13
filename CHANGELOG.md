@@ -1,5 +1,11 @@
 # Changelog
 
+## Descubre — revisión de tarjetas propias (13 nov 2026, UTC)
+- Revisión autorizada del uso EEE: compartir un lugar en un plan y mostrar un catálogo independiente de inspiración no tienen automáticamente el mismo alcance permitido. Pendiente confirmación escrita de Google o revisión jurídica antes de sustituir los componentes oficiales por tarjetas propias.
+- Confirmado documentalmente que Place Search existe en Essentials; múltiples resultados no requieren necesariamente Pro.
+- Documentadas la necesidad de conexión/clave de servidor separada, costes, atribuciones y limitaciones de persistencia. La integración de navegador permanece intacta; no se han conectado servicios nuevos ni publicado.
+- 15/15 pruebas aprobadas y último resultado de compilación observado correcto. Sin verificación nueva de Google en vivo ni del commit remoto de GitHub.
+
 ## Revisión técnica y Git — 13 nov 2026 (UTC)
 - Actualizada la documentación de Google Places: secreto por nombre (sin valor), APIs necesarias, orígenes exactos del editor/Preview/publicado, restricciones HTTP, cuotas y alertas.
 - Documentados los errores históricos y su causa, la confirmación del usuario y las limitaciones reales (incluida la no persistencia de `place_id`). 15/15 pruebas aprobadas de nuevo.

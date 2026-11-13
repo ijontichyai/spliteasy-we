@@ -125,8 +125,33 @@ En **Google Maps Platform → Cuotas**, configurar límites duros según §6 y, 
 - Pendiente una prueba nueva completa «cafeterías en Barcelona» → selección → asistente con el lugar correcto, en escritorio y móvil y con sesión, sin publicar para probar.
 - La sincronización GitHub solo puede confirmarse en **Project settings → Git**. Los remotos locales de esta sesión son internos de Lovable, no identifican el repositorio GitHub conectado ni su rama de sincronización.
 
+## 13. Revisión autorizada de tarjetas propias — 13 nov 2026 (UTC)
+
+**Alcance autorizado:** revisar la viabilidad de tarjetas propias; no equivale a sustituir ADR-003 ni a conectar nuevos servicios de pago.
+
+### Conclusión sobre cumplimiento EEE
+- Los términos específicos EEE, sección B §15.2, limitan el contenido de Places API a los usos enumerados. No mostrar un mapa y conservar atribuciones no elimina esta restricción.
+- El uso permitido (8) contempla compartir o etiquetar un lugar específico en publicaciones, eventos o experiencias compartidas de una plataforma social. El uso (4) contempla asociar tareas, notas o recordatorios con lugares concretos.
+- Añadir un lugar seleccionado a un plan de grupo encaja razonablemente con esos usos, pero esto es una interpretación, no una aprobación de Google. Un catálogo independiente «Ideas para inspirarte» no está expresamente autorizado por una categoría general de descubrimiento o viajes.
+- La exención B §15.3 cubre **Places UI Kit**, no extraer sus datos para reconstruir tarjetas propias. Antes de implementar la propuesta de tarjetas propias, obtener confirmación escrita de Google sobre la experiencia exacta o una revisión jurídica del uso permitido. No afirmar que las tarjetas propias están categóricamente prohibidas ni que están aprobadas.
+- La documentación actual incluye **Place Search (`gmp-place-search`) en Essentials**, con búsqueda de texto y cercana. Esto corrige la omisión de ese componente en §2: descubrir varios lugares no exige por sí mismo Pro. Su disponibilidad efectiva no se ha probado; tampoco se propone una nueva integración directa de Places desde el navegador.
+
+### Configuración necesaria para la propuesta de tarjetas propias
+- Para nuevas búsquedas, usar Places API (New) mediante el conector Google Maps y funciones autenticadas; sin peticiones de datos Places directas desde el navegador.
+- La clave existente `Google_Maps_API_Key` es de navegador y está restringida por referente. Conservarla para la integración operativa; no reutilizarla como clave de servidor ni debilitar sus restricciones.
+- No hay conexión Google Maps accesible en esta sesión. Una futura conexión con credenciales propias requerirá una clave de servidor separada que permita Places API (New). No se ha abierto el diálogo de conexión ni creado un conector alternativo.
+- Las consultas, valoraciones y fotografías pueden generar cargos. Antes de habilitarlas, confirmar cuotas duras y alertas en Google Cloud; alertas y límites de interfaz no garantizan coste cero.
+- Usar consultas explícitas y acotadas, sin carga automática de cuatro búsquedas por visita, sin sondeo, sin reintentos tras errores de permisos/cuota y sin catálogo persistente de contenido Google. Conservar atribución Google y de los fotógrafos.
+- La asociación persistente del `place_id` y añadir a planes existentes siguen pendientes: el asistente actual solo recibe una sugerencia de nombre y pierde la referencia al limpiar la URL. No afirmar que el lugar queda guardado con el plan.
+
+### Resultado de esta revisión
+- Sin cambios en Descubre, autenticación, planes, gastos, pagos o base de datos; sin llamadas Google en vivo y sin publicar.
+- 15/15 pruebas de regresión aprobadas; último resultado observado de compilación: `build OK`.
+- Los cambios documentales se entregan al mecanismo automático de Git de Lovable. Repositorio, rama y commit remoto siguen sin verificarse desde esta sesión.
+
 ## Fuentes
-- Revisión de ampliación de Descubre (13 nov 2026): la documentación actual incluye `gmp-place-search` en Essentials; la búsqueda de múltiples lugares ya no implica necesariamente Pro. No se ha ampliado ni modificado la integración operativa. La vía soportada para nuevas búsquedas es Places API (New) mediante funciones autenticadas y conector, sin peticiones Places directas desde el navegador. La clave actual es de navegador, restringida por referente, y no debe reutilizarse como credencial de servidor. No hay conexión Google Maps accesible en esta sesión. Antes de sustituir los componentes oficiales por tarjetas propias, resolver el alcance permitido para una sección de inspiración bajo los términos EEE (§15.2 y usos permitidos 4/8); la atribución por sí sola no establece permiso. El propietario debe aprobar la revisión respecto a ADR-003 y configurar la conexión de servidor. Las llamadas son de pago por uso; cuotas y alertas siguen siendo necesarias. No se han realizado llamadas Google en vivo, cambios de autenticación, base de datos o publicación durante esta revisión.
+- https://developers.google.com/maps/documentation/javascript/places-ui-kit/place-search?utm_campaign=gmp_lovable_agentskills_v1
+- https://developers.google.com/maps/documentation/javascript/places-ui-kit/overview?utm_campaign=gmp_lovable_agentskills_v1
 - https://developers.google.com/maps/comms/eea/places
 - https://cloud.google.com/terms/maps-platform/eea/maps-service-terms
 - https://cloud.google.com/terms/maps-platform/eea-places-api-permitted-uses
