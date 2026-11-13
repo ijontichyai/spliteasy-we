@@ -1,3 +1,4 @@
+import type * as React from "react";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { DEFAULT_LOCALE, isLocale, translate, type Locale, type MessageKey } from "./dictionaries";
 
@@ -8,7 +9,15 @@ type I18n = {
   setLocale: (l: Locale) => void;
   t: (key: MessageKey, vars?: Record<string, string | number>) => string;
 };
-const Ctx = createContext<I18n | null>(null);
+// Keep one context instance across hot reloads; a re-created context makes consumers miss the provider.
+const g = globalThis as { __spliteasyI18nCtx?: React.Context<I18n | null> };
+const Ctx = (g.__spliteasyI18nCtx ??= createContext<I18n | null>(null));
+
+const fallback: I18n = {
+  locale: DEFAULT_LOCALE,
+  setLocale: () => {},
+  t: (key, vars) => translate(DEFAULT_LOCALE, key, vars),
+};
 
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(DEFAULT_LOCALE);
@@ -30,6 +39,6 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 
 export function useI18n() {
   const v = useContext(Ctx);
-  if (!v) throw new Error("useI18n must be used inside I18nProvider");
-  return v;
+  // Never blank the page: outside the provider, render in the default language.
+  return v ?? fallback;
 }
