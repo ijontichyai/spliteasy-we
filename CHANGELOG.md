@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-11-13 — UI Enhancement 001
+- Temas Claro / Oscuro / Sistema con selector accesible junto a ES/EN.
+- Preferencia guardada en el navegador (`spliteasy.theme`); script en `<head>` evita parpadeos.
+- Solo cambios visuales: sin cambios en base de datos, autenticación, RLS ni cálculos.
+
 ## 2026-11-13 — Sprint Demo
 - CORE 1: planes, participantes, invitaciones seguras, archivado.
 - CORE 2: lugares manuales en el plan.

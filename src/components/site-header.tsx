@@ -5,6 +5,7 @@ import { useSession } from "@/hooks/use-session";
 import { useI18n } from "@/lib/i18n/context";
 import { LOCALES } from "@/lib/i18n/dictionaries";
 import { Button } from "@/components/ui/button";
+import { ThemeSwitcher } from "@/components/theme-switcher";
 
 export function SiteHeader() {
   const { session } = useSession();
@@ -40,6 +41,7 @@ export function SiteHeader() {
               </button>
             ))}
           </div>
+          <ThemeSwitcher />
           <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
             <Link to="/demo">{t("nav.demo")}</Link>
           </Button>
