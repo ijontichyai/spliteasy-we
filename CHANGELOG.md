@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-13 — Feature 004 (diseño cerrado, sin implementación)
+- Rediseño visual de la app: sistema de diseño (superficies en capas, elevación, tipografía, dígitos tabulares, motion mínimo).
+- Auditoría sobre capturas reales: mitad del escritorio vacía, tarjetas sin elevación, contraste AA fallado en oscuro, listas con aspecto CRUD.
+- Documentado en docs/architecture/phase-04-premium.md y ADR-004.
+- Sin cambios en base de datos, RLS, autenticación, cálculos ni servicios. Sin publicar.
+
 ## 2026-11-13 — Feature 003 (diseño cerrado, sin implementación)
 - Google Places mediante Places UI Kit (Essentials), Google Cloud propio, facturación EEE.
 - Documentado en docs/architecture/google-places-integration.md y ADR-003.
