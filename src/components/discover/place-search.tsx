@@ -58,9 +58,11 @@ export function PlaceSearch() {
             setPlace((p) => (p && p.id === id ? { id, name } : p));
           });
           det.addEventListener("gmp-error", () => setState("error"));
+          det.addEventListener("gmp-requesterror", () => setState("error"));
           detailsHost.current.appendChild(det);
         });
         ac.addEventListener("gmp-error", () => setState("error"));
+        ac.addEventListener("gmp-requesterror", () => setState("error"));
         acHost.current.appendChild(ac);
         setState("ready");
       } catch {
