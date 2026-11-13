@@ -47,6 +47,9 @@ export function SiteHeader() {
             </PopoverContent>
           </Popover>
           <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
+            <Link to="/discover">{t("nav.discover")}</Link>
+          </Button>
+          <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
             <Link to="/demo">{t("nav.demo")}</Link>
           </Button>
           {session ? (
