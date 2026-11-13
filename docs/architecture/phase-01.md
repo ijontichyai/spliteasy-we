@@ -1,5 +1,7 @@
 # SplitEasy | Plan, Go & Share — Fase 01 (revisión 2): Diseño arquitectónico
 
+**Estado: Fase 01 aprobada y cerrada a nivel de diseño (13 nov 2026).** Decisiones registradas en [ADR-001](../adr/ADR-001-arquitectura-base.md).
+
 Esto es solo diseño. No se crean tablas, no se toca código, no se activa Lovable Cloud y no se conectan APIs. Este documento está pensado para guardarse en el repositorio como `docs/architecture/phase-01.md` cuando se apruebe.
 
 ## 0. Decisiones incorporadas de la revisión
@@ -13,7 +15,7 @@ Esto es solo diseño. No se crean tablas, no se toca código, no se activa Lovab
 | D5 | Los planes se archivan; no se borran si tienen historial financiero | §4.1, §5 |
 | D6 | Roles del plan separados de los derechos Premium | §3, §6 |
 | D7 | El organizador con Premium activa Premium para el plan y sus participantes | §3 |
-| D8 | Modelo gratuito provisional: 1 plan activo, 4 participantes, funciones esenciales (pendiente de aprobación comercial) | §3 |
+| D8 | Modelo gratuito provisional: 1 plan activo, 4 participantes, funciones esenciales (aprobado provisionalmente para el MVP) | §3 |
 | D9 | Sin Google Places, IA, Stripe ni servicios con coste en esta etapa | §8 |
 | D10 | Diseño, decisiones, relaciones, RLS y criterios de aceptación documentados | todo el documento |
 
@@ -53,7 +55,7 @@ Derecho Premium (qué funciones están disponibles)
 - **Patrocinio de plan (D7)**: un owner con Premium activo marca su plan como `premium_sponsored`. Todos los miembros activos de ese plan usan las funciones Premium **dentro de ese plan**, sin pagar. Fuera de él, siguen siendo gratuitos.
 - Si la suscripción del patrocinador caduca, el plan vuelve a límites gratuitos: nada se borra, solo se bloquean nuevas acciones Premium (solo lectura de lo existente).
 - Una función `plan_has_premium(plan_id)` decide: patrocinador con suscripción activa hoy.
-- **Modelo gratuito provisional (D8, pendiente de aprobación comercial)**:
+- **Modelo gratuito (D8, aprobado provisionalmente para el MVP)**:
   - 1 plan activo como owner (los archivados no cuentan; se puede ser miembro de planes ajenos).
   - Máximo 4 participantes por plan.
   - Incluye: crear plan, invitar, lugares manuales y favoritos, gastos con reparto igual y personalizado, balances y liquidaciones.
@@ -71,7 +73,7 @@ Convenciones: `id uuid` PK por defecto; `created_at`/`updated_at timestamptz`; i
 - **plans**: `owner_id` FK profiles; `name`; `type` enum; `start_date`, `end_date`; `city`, `area`; `estimated_budget`; `currency`; `status` enum (`draft`, `active`, `closed`); `archived_at timestamptz null`, `archived_by`; `premium_sponsored boolean default false`, `sponsor_id` FK profiles null.
   - Check: `end_date >= start_date`; `sponsor_id` solo si `premium_sponsored`.
 - **plan_members**: `plan_id` FK, `user_id` FK profiles, `role` enum (`owner`,`admin`,`member`), `status` enum (`active`,`left`,`removed`), `joined_at`, `left_at`. Único (`plan_id`,`user_id`). Exactamente un `owner` activo por plan (índice único parcial). Los miembros que salen se marcan, no se borran (siguen apareciendo en gastos antiguos).
-- **invitations (D4)**: `plan_id` FK; `created_by`; `token_hash text unique` (SHA-256 del token; el token real solo se muestra una vez al crearlo, 32+ bytes aleatorios); `role_granted` (`member` o `admin`); `expires_at` (por defecto 7 días); `max_uses` (por defecto 1); `use_count`; `revoked_at`. Check `use_count <= max_uses`.
+- **invitations (D4)**: `plan_id` FK; `created_by`; `token_hash text unique` (SHA-256 del token; el token real solo se muestra una vez al crearlo, 32+ bytes aleatorios); `role_granted` (`member` o `admin`); `expires_at` (7 días, aprobado); `max_uses` (1, aprobado); revocable por owner/admin; `use_count`; `revoked_at`. Check `use_count <= max_uses`.
 - **invitation_redemptions**: `invitation_id` FK, `user_id` FK, `redeemed_at`. Único (`invitation_id`,`user_id`) → auditoría y sin dobles usos.
 - **Función `accept_invitation(token)`**: hashea el token, bloquea la fila (`FOR UPDATE`), comprueba no revocada, no caducada, usos disponibles, límite de participantes; incrementa `use_count`, crea la membresía y el registro de uso, todo en una transacción. Error genérico si falla (no revela si el token existe).
 
@@ -91,7 +93,7 @@ Convenciones: `id uuid` PK por defecto; `created_at`/`updated_at timestamptz`; i
   - además, un trigger de comprobación diferida al final de la transacción rechaza cualquier gasto cuya suma no cuadre, aunque se intente escribir por otra vía.
 - **settlements (D3)**: `plan_id`, `from_user`, `to_user`, `amount > 0`, `status` enum (`proposed`,`confirmed`,`rejected`,`cancelled`), `proposed_by`, `confirmed_by`, `confirmed_at`, `note`, `idempotency_key`.
   - Ambos usuarios miembros del plan; `from_user <> to_user`.
-  - Confirma **quien recibe** (`to_user`) o un owner/admin; quien propone no puede autoconfirmar salvo que sea el receptor.
+  - **Solo el receptor (`to_user`) confirma o rechaza.** Owner y admin ven el estado pero no pueden confirmar en nombre de terceros.
   - Duplicados: `idempotency_key` única + no se permite más de una liquidación `proposed` abierta para el mismo par (`plan`,`from`,`to`) (índice único parcial).
   - Solo `confirmed` entra en balances.
 - **Balances**: no se almacenan. Vista `plan_balances` = pagado − parte asignada + liquidaciones confirmadas enviadas − recibidas (excluye gastos borrados). Una función calcula "quién debe a quién" con el mínimo de transferencias. Invariante: la suma de todos los balances de un plan es 0.
@@ -125,7 +127,7 @@ Funciones auxiliares seguras (sin recursión): `is_plan_member(plan_id)`, `plan_
 | favorite_places | uno mismo | uno mismo | uno mismo | uno mismo |
 | plan_places | miembros | miembros, plan escribible | quien lo añadió u owner/admin | igual |
 | expenses / expense_shares | miembros | solo vía `save_expense` | creador u owner/admin vía función | borrado lógico por creador u owner/admin |
-| settlements | miembros | miembros implicados | confirmar/rechazar: receptor u owner/admin | cancelar: quien propuso, si sigue `proposed` |
+| settlements | miembros | miembros implicados | confirmar/rechazar: solo el receptor | cancelar: quien propuso, si sigue `proposed` |
 | subscriptions / billing_events | uno mismo / nadie | solo servidor | solo servidor | no |
 
 Además: permisos explícitos por tabla para usuarios autenticados, ninguno para anónimos; tokens nunca en texto plano; ninguna clave privada en el navegador.
@@ -152,7 +154,7 @@ Cada paso se aprueba y se verifica antes del siguiente.
 
 **CORE 1**
 - Un usuario crea un plan y queda como único owner.
-- Un usuario gratuito no puede tener un segundo plan activo ni más de 4 participantes (pendiente D8).
+- Un usuario gratuito no puede tener un segundo plan activo ni más de 4 participantes por plan.
 - El token de invitación no aparece en la base de datos; un token caducado, revocado o agotado falla con el mismo mensaje genérico.
 - Dos aceptaciones simultáneas de una invitación de 1 uso: solo una entra.
 - Un no miembro no puede leer el plan ni sus datos.
@@ -169,14 +171,15 @@ Cada paso se aprueba y se verifica antes del siguiente.
 - Reenviar el mismo gasto (mismo identificador de envío) no crea duplicados.
 - Una liquidación propuesta no cambia balances; confirmada, sí. No se pueden abrir dos propuestas iguales a la vez.
 - La suma de balances del plan es siempre 0.
+- Un owner o admin que no es el receptor no puede confirmar una liquidación.
 - Caso del documento: 4 amigos, 2 gastos → balance correcto.
 
 **Premium (para fases posteriores)**
 - Los roles del plan no cambian al activar o perder Premium.
 - Un miembro de un plan patrocinado usa funciones Premium solo dentro de ese plan.
 
-## 10. Puntos abiertos para tu decisión
-- Aprobación comercial del modelo gratuito (1 plan, 4 participantes).
-- ¿Puede un admin (no solo el owner) confirmar liquidaciones ajenas? Propuesta actual: sí.
-- Duración por defecto de las invitaciones (propuesta: 7 días, 1 uso).
-- Autorización expresa para empezar el paso 1 del §7.
+## 10. Decisiones cerradas (13 nov 2026)
+- Modelo gratuito: aprobado provisionalmente para el MVP — 1 plan activo propio, 4 participantes por plan gratuito, participación libre en planes de otros.
+- Liquidaciones: solo el receptor confirma; owner/admin solo visualizan.
+- Invitaciones: 7 días, un solo uso, revocables por owner/admin.
+- Fase 02 pendiente de autorización expresa. Ver [ADR-001](../adr/ADR-001-arquitectura-base.md).
