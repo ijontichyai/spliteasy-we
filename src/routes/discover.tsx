@@ -3,6 +3,7 @@ import { ArrowRight, Info } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { SceneIllustration, type Scene } from "@/components/discover/illustration";
 import type { MessageKey } from "@/lib/i18n/dictionaries";
+import { PlaceSearch } from "@/components/discover/place-search";
 
 export const Route = createFileRoute("/discover")({
   head: () => ({
@@ -32,6 +33,8 @@ function Discover() {
       <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accent">{t("home.eyebrow")}</p>
       <h1 className="mt-2 text-3xl font-bold sm:text-4xl">{t("discover.title")}</h1>
       <p className="mt-2 max-w-xl text-muted-foreground">{t("discover.subtitle")}</p>
+      <PlaceSearch />
+      <h2 className="mt-10 text-2xl font-bold">{t("discover.ideas")}</h2>
       <p role="note" className="mt-5 flex items-start gap-2 rounded-2xl border border-border bg-surface-3 px-4 py-3 text-sm">
         <Info className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
         {t("discover.illustrativeNote")}
