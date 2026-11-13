@@ -11,6 +11,7 @@ import {
 import { useEffect, type ReactNode } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { SiteHeader } from "@/components/site-header";
+import { BottomNav } from "@/components/bottom-nav";
 import { I18nProvider } from "@/lib/i18n/context";
 import { supabase } from "@/integrations/supabase/client";
 import { THEME_INIT_SCRIPT } from "@/lib/theme";
@@ -85,7 +86,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     // twitter:image here: every page without its own would inherit the root's preview image.
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { title: "SplitEasy | Plan, Go & Share" },
       { name: "description", content: "Organiza planes en grupo, guarda lugares y reparte gastos." },
       { property: "og:title", content: "SplitEasy | Plan, Go & Share" },
@@ -103,7 +104,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Figtree:wght@400;500;600&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Figtree:wght@400;500;600;700&display=swap",
       },
     ],
   }),
@@ -146,7 +147,10 @@ function RootComponent() {
       <I18nProvider>
         <SiteHeader />
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-        <Outlet />
+        <div className="pb-safe-nav sm:pb-0">
+          <Outlet />
+        </div>
+        <BottomNav />
         <Toaster theme="system" />
       </I18nProvider>
     </QueryClientProvider>

@@ -1,5 +1,16 @@
 # Changelog
 
+
+## 2026-11-13 — Feature 004 implementación (Papel y Marea)
+- Sistema de diseño: superficies `surface-1/2/3`, sombras `elevation-1/2/3`, `bg-premium`, utilidad `money` y dígitos tabulares en todo el texto; contraste corregido (campos en claro; borde y texto secundario en oscuro); `prefers-reduced-motion` respetado.
+- Header: idioma y tema en un menú en móvil; "Entrar" oculto en `/auth`; enlace a Descubre en escritorio.
+- Barra inferior móvil (Inicio, Descubre, Planes, Perfil + botón central "+ Plan" de 56 px) con espacio reservado y safe-area.
+- Portada: hero con escala display y maqueta del producto hecha con tokens (sin imágenes); tarjetas de pilares con icono en contenedor y elevación.
+- Nueva página `/descubre` (`/discover`): ilustraciones SVG propias con etiqueta "Ilustrativo" y espacio reservado para la ficha oficial de Google (ADR-003).
+- Crear plan en 3 pasos (Idea → Fechas → Invitar); solo el nombre es obligatorio y se puede crear desde cualquier paso.
+- Sin cambios en base de datos, RLS, autenticación, invitaciones ni cálculos. 15 tests en verde.
+- Pendiente: rediseño interno de la vista de plan (presupuesto segmentado, filas de gasto con icono, barras de saldo), autenticación a dos columnas y estados vacíos.
+
 ## 2026-11-13 — Feature 004 (diseño cerrado con ajustes, sin implementación)
 - Aprobada la dirección "Papel y Marea". Ajustes: Descubre inmersivo con contenido ilustrativo etiquetado, contenedores listos para Places UI Kit, crear plan con solo el nombre, barra inferior de 4 pestañas con "+ Plan".
 - Documentos: phase-04-premium.md (revisión 2) y ADR-004 (addendum). Sin cambios en código ni en la base de datos.

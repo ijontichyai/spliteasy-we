@@ -1,6 +1,6 @@
 # Feature 004 — Premium UI/UX Revolution (rediseño visual)
 
-**Estado:** diseño cerrado (13 nov 2026). **Implementación NO autorizada.**
+**Estado:** implementación autorizada y en curso (13 nov 2026). Ver "Resultado de implementación" al final.
 **Alcance acordado:** rediseño visual de la app. Solo diseño y documentación.
 **Decisión:** [ADR-004](../adr/ADR-004-identidad-visual.md).
 
@@ -173,3 +173,8 @@ Acceso, RLS, planes y participantes, invitaciones, gastos y balances, liquidacio
 - Se puede crear un plan escribiendo solo el nombre.
 - La barra inferior no tapa contenido a 390 px y se usa con teclado y lector de pantalla.
 - Las pruebas actuales siguen pasando y los cálculos no cambian.
+
+## Resultado de implementación (13 nov 2026)
+**Hecho:** tokens (§4.1), tipografía y dígitos tabulares (§4.2), motion y reduced-motion (§4.3), header y menú móvil, barra inferior (R2.3), portada con maqueta (A1–A4), Descubre con contenido "Ilustrativo" y hueco para Google (R2.1), crear plan en 3 pasos (R2.2). Contraste de §4.1 aplicado.
+**Pendiente:** vista de plan (A8–A11), autenticación a dos columnas (A6), estados vacíos y revisión de cada pantalla en ES/EN y en los tres temas.
+**Verificado:** 15 tests; capturas a 390 px (claro) y 1280 px (oscuro) de portada y Descubre; asistente abierto desde "+ Plan" con sesión iniciada, sin errores. No se creó ningún plan real.

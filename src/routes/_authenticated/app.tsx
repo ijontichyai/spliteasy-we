@@ -24,8 +24,10 @@ export const Route = createFileRoute("/_authenticated/app")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
-  validateSearch: (s: Record<string, unknown>): { go?: "places" | "expenses" } =>
-    s["go"] === "places" || s["go"] === "expenses" ? { go: s["go"] } : {},
+  validateSearch: (s: Record<string, unknown>): { go?: "places" | "expenses"; new?: boolean } => ({
+    ...(s["go"] === "places" || s["go"] === "expenses" ? { go: s["go"] } : {}),
+    ...(s["new"] === true || s["new"] === "true" ? { new: true } : {}),
+  }),
   loader: ({ context }) =>
     Promise.all([
       context.queryClient.ensureQueryData(myProfileQuery()),
@@ -37,16 +39,23 @@ export const Route = createFileRoute("/_authenticated/app")({
   component: AppHome,
 });
 
-const selectCls = "h-10 w-full rounded-md border border-input bg-background px-3 text-sm";
+const selectCls = "h-10 w-full rounded-md border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
 function AppHome() {
   const { t } = useI18n();
   const { data: profile } = useSuspenseQuery(myProfileQuery());
   const { data: limits } = useSuspenseQuery(freeLimitsQuery());
   const { data: plans } = useSuspenseQuery(myPlansQuery());
-  const { go } = Route.useSearch();
+  const { go, new: wantsNew } = Route.useSearch();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  // "+ Plan" in the bottom bar lands here with ?new=true: open the wizard once.
+  useEffect(() => {
+    if (wantsNew) {
+      setOpen(true);
+      navigate({ to: "/app", search: go ? { go } : {}, replace: true });
+    }
+  }, [wantsNew, go, navigate]);
   const activePlans = plans.filter((p) => !p.archived);
   // Coming from a home card with exactly one active plan: open that section directly.
   useEffect(() => {
@@ -88,7 +97,7 @@ function AppHome() {
         <ul className="mt-8 grid gap-4 sm:grid-cols-2">
           {plans.map((p) => (
             <li key={p.id}>
-              <Link to="/plans/$planId" params={{ planId: p.id }} search={go ? { tab: go } : {}} className={`block rounded-3xl border border-border bg-card p-5 shadow-soft transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${p.archived ? "opacity-60" : ""}`}>
+              <Link to="/plans/$planId" params={{ planId: p.id }} search={go ? { tab: go } : {}} className={`block motion-lift rounded-3xl border border-border bg-surface-1 p-5 shadow-elevation-1 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-elevation-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${p.archived ? "opacity-60" : ""}`}>
                 <p className="text-xs font-medium uppercase tracking-wider text-accent">{t(`type.${p.type}`)}{p.city ? ` · ${p.city}` : ""}</p>
                 <h2 className="mt-1 text-xl font-semibold">{p.name}</h2>
                 <p className="mt-3 flex items-center gap-1.5 text-sm text-muted-foreground">
@@ -108,33 +117,68 @@ function CreatePlan({ onDone }: { onDone: () => void }) {
   const { t } = useI18n();
   const qc = useQueryClient();
   const navigate = useNavigate();
+  const [step, setStep] = useState(1);
   const [f, setF] = useState({ name: "", type: "getaway" as PlanType, start: "", end: "", city: "", budget: "" });
   const [busy, setBusy] = useState(false);
-  const submit = async (e: FormEvent) => {
-    e.preventDefault();
+  const steps = [t("wizard.idea"), t("wizard.dates"), t("wizard.invite")];
+  const create = async (invite: boolean) => {
+    if (!f.name.trim()) return setStep(1);
     setBusy(true);
     const { data, error } = await supabase.rpc("create_plan", {
-      _name: f.name, _type: f.type, _start: f.start || null, _end: f.end || null, _city: f.city, _budget: f.budget ? Number(f.budget) : null,
+      _name: f.name.trim(), _type: f.type, _start: f.start || null, _end: f.end || null, _city: f.city, _budget: f.budget ? Number(f.budget) : null,
     } as never);
     setBusy(false);
     if (error) return void toast.error(t(errorKey(error)));
     await qc.invalidateQueries({ queryKey: ["plans"] });
     toast.success(t("plan.created"));
     onDone();
-    navigate({ to: "/plans/$planId", params: { planId: data as unknown as string } });
+    navigate({ to: "/plans/$planId", params: { planId: data as unknown as string }, search: invite ? { tab: "people" } : {} });
+  };
+  const next = (e: FormEvent) => {
+    e.preventDefault();
+    if (step < 3) setStep(step + 1);
+    else void create(true);
   };
   return (
-    <form onSubmit={submit} className="mt-6 grid gap-3 rounded-3xl border border-border bg-card p-5 shadow-soft sm:grid-cols-2">
-      <div className="space-y-1.5 sm:col-span-2"><Label htmlFor="pn">{t("plan.name")}</Label><Input id="pn" required maxLength={120} value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} /></div>
-      <div className="space-y-1.5"><Label htmlFor="pt">{t("plan.type")}</Label>
-        <select id="pt" className={selectCls} value={f.type} onChange={(e) => setF({ ...f, type: e.target.value as PlanType })}>
-          {PLAN_TYPES.map((x) => <option key={x} value={x}>{t(`type.${x}`)}</option>)}
-        </select></div>
-      <div className="space-y-1.5"><Label htmlFor="pc">{t("plan.city")}</Label><Input id="pc" maxLength={120} value={f.city} onChange={(e) => setF({ ...f, city: e.target.value })} /></div>
-      <div className="space-y-1.5"><Label htmlFor="ps">{t("plan.start")}</Label><Input id="ps" type="date" value={f.start} onChange={(e) => setF({ ...f, start: e.target.value })} /></div>
-      <div className="space-y-1.5"><Label htmlFor="pe">{t("plan.end")}</Label><Input id="pe" type="date" min={f.start || undefined} value={f.end} onChange={(e) => setF({ ...f, end: e.target.value })} /></div>
-      <div className="space-y-1.5"><Label htmlFor="pb">{t("plan.budget")}</Label><Input id="pb" type="number" min="0" step="0.01" value={f.budget} onChange={(e) => setF({ ...f, budget: e.target.value })} /></div>
-      <div className="flex items-end gap-2"><Button type="submit" disabled={busy}>{t("plan.create")}</Button><Button type="button" variant="ghost" onClick={onDone}>{t("common.cancel")}</Button></div>
+    <form onSubmit={next} className="mt-6 rounded-3xl border border-border bg-surface-1 p-5 shadow-elevation-2 sm:p-6">
+      <ol className="flex gap-2" aria-label={t("wizard.step", { n: step })}>
+        {steps.map((label, i) => (
+          <li key={label} aria-current={step === i + 1 ? "step" : undefined} className="flex-1">
+            <span className={`block h-1.5 rounded-full ${i < step ? "bg-premium" : "bg-surface-3"}`} />
+            <span className={`mt-1.5 block text-xs font-semibold ${i + 1 === step ? "text-foreground" : "text-muted-foreground"}`}>{label}</span>
+          </li>
+        ))}
+      </ol>
+      <p className="mt-4 text-sm text-muted-foreground" aria-live="polite">{t("wizard.step", { n: step })} · {t(step === 1 ? "wizard.ideaHint" : step === 2 ? "wizard.datesHint" : "wizard.inviteHint")}</p>
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+        {step === 1 && (
+          <>
+            <div className="space-y-1.5 sm:col-span-2"><Label htmlFor="pn">{t("plan.name")}</Label><Input id="pn" autoFocus required maxLength={120} value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} className="h-11" /></div>
+            <div className="space-y-1.5"><Label htmlFor="pt">{t("plan.type")}</Label>
+              <select id="pt" className={selectCls} value={f.type} onChange={(e) => setF({ ...f, type: e.target.value as PlanType })}>
+                {PLAN_TYPES.map((x) => <option key={x} value={x}>{t(`type.${x}`)}</option>)}
+              </select></div>
+            <div className="space-y-1.5"><Label htmlFor="pc">{t("plan.city")}</Label><Input id="pc" maxLength={120} value={f.city} onChange={(e) => setF({ ...f, city: e.target.value })} /></div>
+          </>
+        )}
+        {step === 2 && (
+          <>
+            <div className="space-y-1.5"><Label htmlFor="ps">{t("plan.start")}</Label><Input id="ps" type="date" value={f.start} onChange={(e) => setF({ ...f, start: e.target.value })} /></div>
+            <div className="space-y-1.5"><Label htmlFor="pe">{t("plan.end")}</Label><Input id="pe" type="date" min={f.start || undefined} value={f.end} onChange={(e) => setF({ ...f, end: e.target.value })} /></div>
+            <div className="space-y-1.5"><Label htmlFor="pb">{t("plan.budget")}</Label><Input id="pb" type="number" min="0" step="0.01" value={f.budget} onChange={(e) => setF({ ...f, budget: e.target.value })} /></div>
+          </>
+        )}
+      </div>
+      <div className="mt-6 flex flex-wrap items-center gap-2">
+        <Button type="submit" disabled={busy || !f.name.trim()} className="h-11 rounded-full bg-premium px-6">
+          {step < 3 ? t("wizard.next") : t("wizard.createInvite")}
+        </Button>
+        <Button type="button" variant="outline" disabled={busy || !f.name.trim()} className="h-11 rounded-full" onClick={() => void create(false)}>
+          {step === 1 ? t("plan.create") : t("wizard.later")}
+        </Button>
+        {step > 1 && <Button type="button" variant="ghost" className="h-11" onClick={() => setStep(step - 1)}>{t("wizard.back")}</Button>}
+        <Button type="button" variant="ghost" className="ml-auto h-11" onClick={onDone}>{t("common.cancel")}</Button>
+      </div>
     </form>
   );
 }
