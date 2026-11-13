@@ -1,5 +1,5 @@
 # Roadmap
-- [ ] Descubre: sustituir ilustraciones por lugares reales dinámicos — pendiente resolver compatibilidad con ADR-003, costes y configuración de búsqueda
+- [ ] Descubre: sustituir ilustraciones por lugares reales dinámicos — bloqueado por revisión del uso EEE para tarjetas propias y aprobación/configuración de conexión de servidor; búsqueda actual intacta
 - [x] Feature 003: diseño y documentación de Google Places
 - [x] Feature 003: búsqueda Places UI Kit en Descubre y sugerencia de nombre en el asistente (autorización posterior)
 - [ ] Feature 003: persistencia de place_id, favoritos y controles de uso — requieren autorización adicional
