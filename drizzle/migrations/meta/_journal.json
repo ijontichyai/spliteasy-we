@@ -15,6 +15,13 @@
       "when": 1794594375881,
       "tag": "0001_phase02_revoke_anon",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794594950335,
+      "tag": "0002_core_1_2_3",
+      "breakpoints": true
     }
   ]
 }
