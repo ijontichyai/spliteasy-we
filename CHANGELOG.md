@@ -1,6 +1,14 @@
 # Changelog
 
 
+
+## Feature 003 — Google Places en Descubre (13 nov 2026)
+- Descubre: buscador real con Places UI Kit Essentials (autocompletar básico + ficha oficial de Google). Atribuciones intactas, sin mapa.
+- Clave de navegador del Google Cloud propio, guardada como secreto `Google_Maps_API_Key` y entregada al navegador por una función del servidor (clave restringida por dominio y API).
+- "Crear un plan con este lugar" abre el creador con el nombre del lugar como sugerencia editable. El `place_id` no se guarda aún en la base de datos (requiere autorización).
+- Error o cuota agotada: mensaje claro, sin reintentos; los lugares manuales siguen disponibles.
+- Comprobado: 15 pruebas, compilación limpia, Descubre en móvil sin errores. Pendiente: búsqueda real «cafeterías en Barcelona» en el sitio publicado.
+
 ## 2026-11-13 — Feature 004 implementación (Papel y Marea)
 - Sistema de diseño: superficies `surface-1/2/3`, sombras `elevation-1/2/3`, `bg-premium`, utilidad `money` y dígitos tabulares en todo el texto; contraste corregido (campos en claro; borde y texto secundario en oscuro); `prefers-reduced-motion` respetado.
 - Header: idioma y tema en un menú en móvil; "Entrar" oculto en `/auth`; enlace a Descubre en escritorio.
