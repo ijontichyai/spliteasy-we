@@ -28,3 +28,5 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+- Architecture source of truth: docs/architecture/phase-01.md (approved Phase 01 design); multi-row financial/invitation/archive operations go through transactional DB functions, never several client calls.
