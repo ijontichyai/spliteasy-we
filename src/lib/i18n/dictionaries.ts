@@ -1,0 +1,123 @@
+// Add a language: add its code to LOCALES and a dictionary with the same keys as `es`.
+export const LOCALES = ["es", "en"] as const;
+export type Locale = (typeof LOCALES)[number];
+export const DEFAULT_LOCALE: Locale = "es";
+
+const es = {
+  "brand.tagline": "Plan, Go & Share",
+  "nav.signIn": "Entrar",
+  "nav.signOut": "Cerrar sesión",
+  "nav.myPlans": "Mis planes",
+  "nav.profile": "Perfil",
+  "home.title": "Organiza el plan. Disfrútalo. Reparte sin líos.",
+  "home.subtitle": "Crea planes con tu grupo, guarda lugares y salda los gastos con transparencia, todo en un solo sitio.",
+  "home.cta": "Empieza gratis",
+  "home.ctaSignedIn": "Ir a mis planes",
+  "home.plan": "Planifica",
+  "home.planText": "Crea el plan, invita a tu grupo y decidid juntos.",
+  "home.go": "Descubre",
+  "home.goText": "Guarda lugares y favoritos para cada salida.",
+  "home.share": "Reparte",
+  "home.shareText": "Registra gastos y mira quién debe a quién.",
+  "auth.signInTitle": "Bienvenido de nuevo",
+  "auth.signUpTitle": "Crea tu cuenta",
+  "auth.email": "Correo electrónico",
+  "auth.password": "Contraseña",
+  "auth.displayName": "Tu nombre",
+  "auth.signIn": "Entrar",
+  "auth.signUp": "Crear cuenta",
+  "auth.toSignUp": "¿No tienes cuenta? Regístrate",
+  "auth.toSignIn": "¿Ya tienes cuenta? Entra",
+  "auth.forgot": "¿Olvidaste tu contraseña?",
+  "auth.forgotTitle": "Recuperar contraseña",
+  "auth.forgotSend": "Enviar enlace",
+  "auth.back": "Volver",
+  "auth.checkEmail": "Revisa tu correo y pulsa el enlace de confirmación para activar tu cuenta.",
+  "auth.resetSent": "Si existe una cuenta con ese correo, te hemos enviado un enlace.",
+  "auth.passwordHint": "Mínimo 8 caracteres.",
+  "auth.errorGeneric": "No se pudo completar. Revisa los datos e inténtalo de nuevo.",
+  "auth.errorCredentials": "Correo o contraseña incorrectos, o cuenta sin confirmar.",
+  "reset.title": "Nueva contraseña",
+  "reset.save": "Guardar contraseña",
+  "reset.done": "Contraseña actualizada.",
+  "reset.invalid": "Este enlace no es válido o ha caducado. Solicita uno nuevo.",
+  "app.title": "Mis planes",
+  "app.empty": "Aún no tienes planes. Muy pronto podrás crear el primero.",
+  "app.hello": "Hola, {name}",
+  "app.freeLimits": "Plan gratuito: {plans} plan activo y hasta {members} participantes.",
+  "profile.title": "Tu perfil",
+  "profile.displayName": "Nombre visible",
+  "profile.avatar": "URL del avatar (opcional)",
+  "profile.language": "Idioma",
+  "profile.save": "Guardar cambios",
+  "profile.saved": "Perfil guardado.",
+  "profile.email": "Correo",
+  "lang.es": "Español",
+  "lang.en": "English",
+};
+export type MessageKey = keyof typeof es;
+
+const en: Record<MessageKey, string> = {
+  "brand.tagline": "Plan, Go & Share",
+  "nav.signIn": "Sign in",
+  "nav.signOut": "Sign out",
+  "nav.myPlans": "My plans",
+  "nav.profile": "Profile",
+  "home.title": "Plan it. Enjoy it. Split it without fuss.",
+  "home.subtitle": "Create plans with your group, save places and settle expenses transparently, all in one place.",
+  "home.cta": "Start for free",
+  "home.ctaSignedIn": "Go to my plans",
+  "home.plan": "Plan",
+  "home.planText": "Create the plan, invite your group and decide together.",
+  "home.go": "Go",
+  "home.goText": "Save places and favourites for every outing.",
+  "home.share": "Share",
+  "home.shareText": "Log expenses and see who owes whom.",
+  "auth.signInTitle": "Welcome back",
+  "auth.signUpTitle": "Create your account",
+  "auth.email": "Email",
+  "auth.password": "Password",
+  "auth.displayName": "Your name",
+  "auth.signIn": "Sign in",
+  "auth.signUp": "Create account",
+  "auth.toSignUp": "No account? Sign up",
+  "auth.toSignIn": "Already have an account? Sign in",
+  "auth.forgot": "Forgot your password?",
+  "auth.forgotTitle": "Reset password",
+  "auth.forgotSend": "Send link",
+  "auth.back": "Back",
+  "auth.checkEmail": "Check your inbox and click the confirmation link to activate your account.",
+  "auth.resetSent": "If an account exists for that email, we've sent you a link.",
+  "auth.passwordHint": "At least 8 characters.",
+  "auth.errorGeneric": "Couldn't complete that. Check your details and try again.",
+  "auth.errorCredentials": "Wrong email or password, or account not confirmed.",
+  "reset.title": "New password",
+  "reset.save": "Save password",
+  "reset.done": "Password updated.",
+  "reset.invalid": "This link is invalid or has expired. Request a new one.",
+  "app.title": "My plans",
+  "app.empty": "You don't have any plans yet. You'll be able to create your first one soon.",
+  "app.hello": "Hi, {name}",
+  "app.freeLimits": "Free plan: {plans} active plan and up to {members} participants.",
+  "profile.title": "Your profile",
+  "profile.displayName": "Display name",
+  "profile.avatar": "Avatar URL (optional)",
+  "profile.language": "Language",
+  "profile.save": "Save changes",
+  "profile.saved": "Profile saved.",
+  "profile.email": "Email",
+  "lang.es": "Español",
+  "lang.en": "English",
+};
+
+export const dictionaries: Record<Locale, Record<MessageKey, string>> = { es, en };
+
+export function translate(locale: Locale, key: MessageKey, vars?: Record<string, string | number>) {
+  let msg = dictionaries[locale]?.[key] ?? dictionaries[DEFAULT_LOCALE][key] ?? key;
+  if (vars) for (const [k, v] of Object.entries(vars)) msg = msg.replaceAll(`{${k}}`, String(v));
+  return msg;
+}
+
+export function isLocale(v: unknown): v is Locale {
+  return typeof v === "string" && (LOCALES as readonly string[]).includes(v);
+}
