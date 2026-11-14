@@ -11,11 +11,11 @@ describe("participants leaving and removal", () => {
   it("the organizer can remove anyone else", () => expect(canRemoveMember("owner", { id: "c", role: "admin" }, "a", 0)).toBe("ok"));
   it("an outsider cannot remove", () => expect(canRemoveMember(undefined, { id: "c", role: "member" }, "x", 0)).toBe("FORBIDDEN"));
   it("old expenses keep balances after a settled member leaves; new ones split among active", () => {
-    const old = [{ amountCents: 4000, paidBy: "a", shares: { a: 2000, b: 2000 } }];
+    const old = [{ paidBy: "a", shares: { a: 2000, b: 2000 } }];
     const st = [{ from: "b", to: "a", cents: 2000, confirmed: true }];
     const before = computeBalances(["a", "b"], old, st);
     expect(before["b"]).toBe(0);
-    const after = computeBalances(["a", "c"], [...old, { amountCents: 1000, paidBy: "c", shares: { a: 500, c: 500 } }], st);
+    const after = computeBalances(["a", "c"], [...old, { paidBy: "c", shares: { a: 500, c: 500 } }], st);
     expect(after["a"]).toBe(-500);
     expect(after["c"]).toBe(500);
   });
