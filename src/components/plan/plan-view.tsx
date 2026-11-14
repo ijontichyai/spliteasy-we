@@ -28,17 +28,17 @@ export function Avatar({ name, i }: { name: string; i: number }) {
   );
 }
 
-export function PlanView({ data, actions, initialTab }: { data: PlanData; actions: PlanActions; initialTab?: PlanTab | undefined }) {
+export function PlanView({ data, actions, initialTab, protectedView = false }: { data: PlanData; actions: PlanActions; initialTab?: PlanTab | undefined; protectedView?: boolean }) {
   const { t, locale } = useI18n();
   const { plan, members, me } = data;
-  const readOnly = plan.archived;
+  const readOnly = plan.archived || protectedView;
   const myRole = members.find((m) => m.id === me)?.role;
   const nameOf = (id: string) => {
     const n = members.find((m) => m.id === id)?.name ?? "?";
     return id === me ? `${n} (${t("common.you")})` : n;
   };
   const idx = (id: string) => Math.max(0, members.findIndex((m) => m.id === id));
-  const money = (c: number) => formatMoney(c, locale, plan.currency);
+  const money = (c: number) => protectedView ? t("support.hidden") : formatMoney(c, locale, plan.currency);
   const run = async (fn: () => Promise<void>, ok?: string) => {
     try { await fn(); if (ok) toast.success(ok); } catch (e) { toast.error(t(errorKey(e))); }
   };
@@ -99,8 +99,8 @@ export function PlanView({ data, actions, initialTab }: { data: PlanData; action
           {actions.createInvite && (myRole === "owner" || myRole === "admin") && !readOnly && (
             <Invitations data={data} actions={actions} />
           )}
-          {actions.setArchived && myRole === "owner" && (
-            <Button variant="outline" size="sm" onClick={() => run(() => actions.setArchived!(!plan.archived))}>
+          {actions.setArchived && myRole === "owner" && !protectedView && (
+            <Button variant="outline" size="sm" onClick={() => { const archive = actions.setArchived; if (archive) void run(() => archive(!plan.archived)); }}>
               {plan.archived ? t("plan.unarchive") : t("plan.archive")}
             </Button>
           )}

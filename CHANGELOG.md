@@ -1,5 +1,14 @@
 # Changelog
 
+## AUTH-003 — cierre y View as User protegido — 14 nov 2026
+- Confirmada la corrección de revocación por externos: AUTH-003.1 49/49 PASS; AUTH-002.2 29/29 PASS; AUTH-002.1b ocho escenarios (36 comprobaciones) PASS, antes y después de ampliar.
+- Añadidos `/support` y `/admin`, ES/EN: solicitudes, consentimiento, código de un solo uso, aprobación/rechazo del organizador, revocación, notificaciones y vista protegida con salida visible y contador.
+- Migración aditiva `0007_auth_003_admin_support_portal.sql`: dispatcher transaccional auditado; operaciones del panel exclusivas para admin. RLS existente, login y proveedores intactos.
+- Administrador permanece con su propia identidad; no datos personales/financieros reales en la vista, no credenciales de terceros, sin modo real.
+- 21/21 comprobaciones nuevas del dispatcher, 19/19 pruebas de app y flujo navegador real con A/B/C/D PASS. Última compilación observada correcta.
+- Escaneo rápido: solo aviso informativo por lectura autenticada de límites públicos del producto, comportamiento intencionado. Escaneo profundo iniciado; resultado pendiente y no incluido en los PASS.
+- Cuenta D recibió admin temporal durante el flujo de navegador para separar soporte y organizador; revocado al terminar. Cuentas conservadas; solo datos QA modificados. Informe: `docs/security/auth-003-1-report.md`. Sin publicar.
+
 ## AUTH-002.1 — Endurecimiento RLS (R1, R2) — 14 nov 2026
 
 - **R1:** `shares_plan_with` exige ahora `status='active'` en ambos miembros. Los ex-participantes dejan de ver perfiles de su antiguo grupo y viceversa.

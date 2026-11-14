@@ -1,6 +1,17 @@
 # AUTH-003 — Secure admin support & "view as user" (Phase 1: design only)
 
-Status: PROPOSAL, nothing implemented. Builds on AUTH-002.1 (R1/R2), AUTH-002.1b, AUTH-002.2 (`user_roles`, `has_role`, `is_admin`, immutable `admin_audit_log`).
+Status: Protected View implemented and verified on 14 November 2026. The historical proposal below is superseded by this implementation addendum wherever it mentions real-data mode or a different schema.
+
+## Implemented v1 (approved scope)
+- Protected View only; Real Data Mode is excluded, not an available option. Staff remain authenticated as themselves; no user tokens, passwords or impersonated identity.
+- Database support sessions use `support_target` account/plan, requests, grants and notifications. Existing plan/profile/financial RLS is unchanged.
+- `/support`: request, explicit consent, single-use activation code shown once, revoke, organizer approve/reject, notices and session history.
+- `/admin`: admin-only audited directory of users who requested help (opaque identifier and safely available provider, never email/name/topic), acceptance and protected view. No new login providers are enabled.
+- `support_portal` is an authenticated transactional dispatcher with server-side admin checks for admin/read/start/exit. Existing support functions are reused. Rejecting a plan request revokes its grant.
+- Shared-plan authorization requires the organizer's additional approval. The assigned administrator cannot approve their own support access to that plan: another authorized administrator must handle it.
+- Maximum duration 15 minutes, activation deadline 30 minutes, one-time code, revocation checked on every view. The UI checks every second and hides the preview on expiry or refusal.
+- Protected PlanView reuses existing tabs with writes disabled and amounts hidden. Names/places are synthetic; financial detail is not transmitted. Aggregate counts are shown separately.
+- Test report: [AUTH-003 closure](../security/auth-003-1-report.md). No publication or payments changes.
 
 ## 1. Architecture proposal
 Core idea: **impersonation is never real.** The staff member always acts as themselves (`auth.uid()` = staff). Access to a user's data is granted by a **support grant**: a short-lived, scoped, consented row the backend checks inside dedicated read-only functions.

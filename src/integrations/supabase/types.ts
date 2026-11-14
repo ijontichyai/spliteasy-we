@@ -1017,6 +1017,17 @@ export type Database = {
         Returns: Json
       }
       support_grant_revoke: { Args: { _grant: string }; Returns: Json }
+      support_portal: {
+        Args: {
+          _action: string
+          _id?: string
+          _plan?: string
+          _target?: Database["public"]["Enums"]["support_target"]
+          _token?: string
+          _topic?: string
+        }
+        Returns: Json
+      }
       support_request_accept: { Args: { _request: string }; Returns: Json }
       support_request_create: { Args: { _topic: string }; Returns: Json }
       support_session_end: { Args: { _grant: string }; Returns: Json }

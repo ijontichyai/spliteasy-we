@@ -1,4 +1,8 @@
 # Roadmap
+- [x] AUTH-003 cierre: verificar corrección de revocación y repetir seguridad y regresiones antes de ampliar
+- [x] AUTH-003: panel admin, consentimiento/revocación y aprobación/rechazo del organizador
+- [x] AUTH-003: verificar flujo con A/B/C/D y documentar resultados sin publicar
+- [ ] AUTH-003 revisión automática profunda — pendiente resultado externo; no incluye cambios aún no guardados al iniciarse
 - [x] Descubre: fotografías de inspiración con licencia, aviso ES/EN, verificación visual y documentación; búsqueda Google intacta
 - [x] Descubre: revisión autorizada de tarjetas propias y términos EEE documentada
 - [ ] Descubre: sustituir ilustraciones por lugares reales dinámicos — pendiente confirmación de Google/revisión jurídica del catálogo propio, aprobación del cambio de ADR-003 y conexión de servidor; búsqueda actual intacta
