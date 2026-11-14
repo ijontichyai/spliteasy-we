@@ -1,5 +1,9 @@
 # Changelog
 
+## DEMO-002 BUG-001 — 2026-11-14
+- Fix: participant pencil did nothing because the browser prompt dialog is blocked inside the preview frame; replaced with an inline rename form. Expenses and balances unaffected (ids unchanged).
+- Same cause fixed for "Leave plan"/"Remove" confirmation: inline confirmation instead of the blocked browser dialog.
+
 ## GROUPS-003 + DEMO-002 — 2026-11-14
 - Demo: add, rename and remove fictional participants (browser only).
 - Real plans: participants can leave; organizer removes anyone, co-admins remove members (DB function remove_plan_member, migration 0010).

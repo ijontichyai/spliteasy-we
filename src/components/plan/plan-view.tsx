@@ -42,6 +42,8 @@ export function PlanView({ data, actions, initialTab, protectedView = false }: {
   const idx = (id: string) => Math.max(0, members.findIndex((m) => m.id === id));
   const money = (c: number) => protectedView ? t("support.hidden") : formatMoney(c, locale, plan.currency);
   const [editing, setEditing] = useState<string | null>(null);
+  const [renaming, setRenaming] = useState<string | null>(null);
+  const [removing, setRemoving] = useState<string | null>(null);
   const runOrThrow = async (fn: () => Promise<void>, ok?: string) => {
     try { await fn(); if (ok) toast.success(ok); } catch (e) { toast.error(t(errorKey(e))); throw e; }
   };
@@ -99,19 +101,33 @@ export function PlanView({ data, actions, initialTab, protectedView = false }: {
                 <span className="flex-1 font-medium">{nameOf(m.id)}</span>
                 <span className="rounded-full bg-muted px-2.5 py-0.5 text-xs text-muted-foreground">{t(`role.${m.role}`)}</span>
                 {!readOnly && actions.renameMember && (
-                  <Button size="icon" variant="ghost" aria-label={t("member.rename")} onClick={() => { const n = window.prompt(t("member.rename"), m.name)?.trim(); const rn = actions.renameMember; if (n && rn) void run(() => rn(m.id, n)); }}><Pencil className="size-4" /></Button>
+                  <Button size="icon" variant="ghost" aria-label={t("member.rename")} aria-expanded={renaming === m.id} onClick={() => setRenaming(renaming === m.id ? null : m.id)}><Pencil className="size-4" /></Button>
                 )}
                 {!readOnly && actions.removeMember && m.role !== "owner" && (m.id === me || canRemoveMember(myRole, m, me, 0) === "ok") && (
                   <Button size="sm" variant="ghost" onClick={() => {
                     const rm = actions.removeMember; if (!rm) return;
                     const why = canRemoveMember(myRole, m, me, balances[m.id] ?? 0);
                     if (why !== "ok") { toast.error(t(`err.${why}` as never)); return; }
-                    if (window.confirm(m.id === me ? t("member.leaveConfirm") : t("member.removeConfirm", { name: m.name }))) void run(() => rm(m.id), m.id === me ? t("member.left") : t("member.removed"));
+                    setRemoving(m.id);
                   }}>{m.id === me ? t("member.leave") : t("member.remove")}</Button>
                 )}
               </li>
             ))}
           </ul>
+          {removing && actions.removeMember && members.some((m) => m.id === removing) && (
+            <div role="alertdialog" aria-live="polite" className="flex flex-wrap items-center gap-2 rounded-2xl border border-destructive/40 bg-card p-3 text-sm">
+              <p className="flex-1">{removing === me ? t("member.leaveConfirm") : t("member.removeConfirm", { name: members.find((m) => m.id === removing)?.name ?? "" })}</p>
+              <Button size="sm" variant="destructive" onClick={() => { const rm = actions.removeMember; const id = removing; if (rm) void run(() => rm(id), id === me ? t("member.left") : t("member.removed")).then(() => setRemoving(null)); }}>{removing === me ? t("member.leave") : t("member.remove")}</Button>
+              <Button size="icon" variant="ghost" aria-label="Cancel" onClick={() => setRemoving(null)}><X className="size-4" /></Button>
+            </div>
+          )}
+          {renaming && actions.renameMember && members.some((m) => m.id === renaming) && (
+            <form className="flex gap-2" onSubmit={(e) => { e.preventDefault(); const n = String(new FormData(e.currentTarget).get("rename") ?? "").trim(); const rn = actions.renameMember; const id = renaming; if (n && rn) void run(() => rn(id, n)).then(() => setRenaming(null)); }}>
+              <Input key={renaming} name="rename" maxLength={40} required autoFocus defaultValue={members.find((m) => m.id === renaming)?.name} aria-label={t("member.rename")} />
+              <Button type="submit" variant="secondary"><Check className="size-4" />{t("member.rename")}</Button>
+              <Button type="button" variant="ghost" size="icon" aria-label="Cancel" onClick={() => setRenaming(null)}><X className="size-4" /></Button>
+            </form>
+          )}
           {!readOnly && actions.addMember && (data.memberLimit == null || members.length < data.memberLimit) && (
             <form className="flex gap-2" onSubmit={(e) => { e.preventDefault(); const f = e.currentTarget; const n = String(new FormData(f).get("name") ?? "").trim(); const add = actions.addMember; if (n && add) void run(() => add(n)).then(() => f.reset()); }}>
               <Input name="name" maxLength={40} placeholder={t("member.namePh")} aria-label={t("member.namePh")} required />
