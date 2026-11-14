@@ -14,8 +14,9 @@ describe("participants leaving and removal", () => {
     const old = [{ amountCents: 4000, paidBy: "a", shares: { a: 2000, b: 2000 } }];
     const st = [{ from: "b", to: "a", cents: 2000, confirmed: true }];
     const before = computeBalances(["a", "b"], old, st);
-    expect(before.find((x: { id: string }) => x.id === "b")).toMatchObject({ cents: 0 });
+    expect(before["b"]).toBe(0);
     const after = computeBalances(["a", "c"], [...old, { amountCents: 1000, paidBy: "c", shares: { a: 500, c: 500 } }], st);
-    expect(after.find((x: { id: string }) => x.id === "a")).toMatchObject({ cents: -500 });
+    expect(after["a"]).toBe(-500);
+    expect(after["c"]).toBe(500);
   });
 });
