@@ -2,6 +2,13 @@
 Updated: 2026-11-14
 Status: proposed governance policy (documentation-only branch; not yet merged into main)
 
+## Decision authority and Lovable prompts
+- Armando (Commander) **directs, prioritizes, and authorizes** all scope, major decisions, implementation prompts, releases, and material changes.
+- Anémona (ChatGPT) is the GitHub governance coordinator and **prepares, reviews, and controls prompts sent to Lovable** in coordination with Armando. Nothing is sent to Lovable on Armando's behalf without their authorization, and Armando may agree explicitly to exceptions.
+- Default workflow: Armando requests/approves objective → Anémona drafts or checks exact Lovable prompt → Armando approves the prompt → Lovable executes → Anémona verifies resulting commits, documentation and test evidence → Armando accepts.
+- No independent scope expansion, unapproved deployments, spending, paid services, secrets exposure, or production payment activation.
+- Prompt log records approved prompt, purpose, change scope, resulting commit references and verification status; proposed/pending/implemented/verified must be distinct.
+
 ## Roles and source of truth
 - Product owner and release approver: Armando Romero Mariscal Guasp.
 - Technical coordination, documentation review, audit and backlog: Anémona (ChatGPT), operating through authorized GitHub actions.
