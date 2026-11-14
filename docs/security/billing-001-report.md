@@ -27,3 +27,24 @@ Status: implemented in TEST mode. Live payments NOT activated. Not published.
 
 ## Open issue
 Checkout adds VAT on top (1,49 € showed as 1,80 € for a Belgian address). EU consumer prices are normally VAT-inclusive; switching prices to tax-inclusive needs a decision.
+
+## BILLING-001.1 — Precios finales sin recargos (2026-11-14)
+
+Decisión aprobada (Opción A): sin gestión integral de cumplimiento de Stripe (+3,5 %) y sin cálculo automático de impuestos (+0,5 %). Solo Stripe Sandbox.
+
+| Prueba | Resultado |
+|---|---|
+| Precios Sandbox existentes (`premium_weekly` 149, `premium_monthly` 399, `premium_annual` 2999 EUR, tax_behavior unspecified) | Conservados — no requieren sustitución; Price IDs sin cambios |
+| Sesión de pago creada con cliente de Bélgica: total 1,49 / 3,99 / 29,99 €, impuesto 0, gestión integral y cálculo automático desactivados | PASS |
+| Prueba automática: el pago no activa gestión integral ni impuestos automáticos | PASS |
+| Pruebas de la app (23 previas + 1 nueva) | 24/24 PASS |
+| Visualización del formulario con dirección española en navegador | NOT TESTED (sin impuestos automáticos la dirección no cambia el total) |
+| Pago completo 4242 / tarjeta rechazada / cancelación | NOT TESTED (pendiente prueba manual) |
+
+### Obligaciones fiscales pendientes antes del lanzamiento comercial
+- Alta censal del vendedor en España (modelo 036/037) y epígrafe de servicios digitales.
+- IVA del país del consumidor en servicios electrónicos B2C UE: registro en ventanilla única OSS (o IVA español si ventas UE < 10 000 €/año), declaraciones trimestrales (modelo 369).
+- Precios publicados como importes finales con la mención "IVA incluido"; el IVA se detrae del precio, reduciendo el ingreso neto según el país.
+- Conservar dos pruebas de localización del cliente y emitir factura/recibo conforme.
+- Decidir antes de producción si se automatiza el cálculo/declaración de impuestos (requiere aprobación expresa por su coste).
+- Precios en Stripe: valorar marcar tax_behavior "inclusive" si en el futuro se activa cálculo automático.

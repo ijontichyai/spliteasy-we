@@ -1,5 +1,10 @@
 # Changelog
 
+## BILLING-001.1 — 2026-11-14
+- Eliminada la gestión integral de Stripe (+3,5 %); sin cálculo automático de impuestos.
+- 1,49 / 3,99 / 29,99 € son importes finales; precios Sandbox conservados (no fue necesario sustituirlos).
+- Nueva prueba de regresión; 24/24 PASS. Obligaciones fiscales documentadas en docs/security/billing-001-report.md.
+
 ## AUTH-003 — cierre y View as User protegido — 14 nov 2026
 - Confirmada la corrección de revocación por externos: AUTH-003.1 49/49 PASS; AUTH-002.2 29/29 PASS; AUTH-002.1b ocho escenarios (36 comprobaciones) PASS, antes y después de ampliar.
 - Añadidos `/support` y `/admin`, ES/EN: solicitudes, consentimiento, código de un solo uso, aprobación/rechazo del organizador, revocación, notificaciones y vista protegida con salida visible y contador.

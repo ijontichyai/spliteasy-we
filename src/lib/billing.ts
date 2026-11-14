@@ -21,3 +21,17 @@ export function isPremiumActive(sub: SubscriptionRow | null, now = new Date()): 
   if (!["active", "trialing", "past_due", "canceled"].includes(sub.status)) return false;
   return new Date(sub.current_period_end) > now;
 }
+
+/** Checkout session body. Prices are final consumer amounts (VAT included):
+ * no managed payments and no automatic tax, so nothing is added at checkout. */
+export function checkoutSessionParams(o: { stripePriceId: string; returnUrl: string; customerId: string; userId: string }) {
+  return {
+    line_items: [{ price: o.stripePriceId, quantity: 1 }],
+    mode: "subscription" as const,
+    ui_mode: "embedded_page" as const,
+    return_url: o.returnUrl,
+    customer: o.customerId,
+    metadata: { userId: o.userId },
+    subscription_data: { metadata: { userId: o.userId } },
+  };
+}
