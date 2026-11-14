@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { PREMIUM_PLANS, isPremiumActive, isPremiumPriceId } from "@/lib/billing";
+import { PREMIUM_PLANS, isPremiumActive, isPremiumPriceId, checkoutSessionParams } from "@/lib/billing";
 
 const now = new Date("2026-11-14T12:00:00Z");
 describe("billing rules", () => {
@@ -20,7 +20,6 @@ describe("billing rules", () => {
   });
 });
 
-import { checkoutSessionParams } from "@/lib/billing";
 describe("checkout sin recargos", () => {
   it("no activa gestión integral ni impuestos automáticos", () => {
     const p = checkoutSessionParams({ stripePriceId: "price_x", returnUrl: "https://x", customerId: "cus", userId: "u" }) as Record<string, unknown>;
