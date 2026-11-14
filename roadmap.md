@@ -14,3 +14,6 @@
 - [ ] Feature 004: vista de plan (presupuesto, gastos, balances), autenticación a dos columnas, estados vacíos
 - [x] Revisión técnica: documentar Google Cloud, restricciones, resultados y limitaciones; ejecutar regresiones
 - [ ] Verificar repositorio, rama y hash GitHub sincronizados — solo visibles en Project settings → Git; sin conexión de API accesible
+
+- [ ] BILLING-001 manual test payment (4242), failed card, cancel renewal — pending user check
+- [ ] BILLING-001 decide VAT-inclusive prices
