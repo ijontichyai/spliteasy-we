@@ -91,3 +91,6 @@
 
 ## 2026-11-13 — Fase 01
 - Diseño arquitectónico y ADR-001.
+
+## AUTH-002.1b — 2026-11-14
+- Validación RLS con 4 cuentas de prueba: 8/8 escenarios PASS. Informe: docs/security/auth-002-1b-report.md. Sin cambios de esquema.
