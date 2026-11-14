@@ -2,7 +2,7 @@
 - [x] AUTH-003 cierre: verificar corrección de revocación y repetir seguridad y regresiones antes de ampliar
 - [x] AUTH-003: panel admin, consentimiento/revocación y aprobación/rechazo del organizador
 - [x] AUTH-003: verificar flujo con A/B/C/D y documentar resultados sin publicar
-- [ ] AUTH-003 revisión automática profunda — pendiente resultado externo; no incluye cambios aún no guardados al iniciarse
+- [ ] Revisión profunda sobre código actual (RELEASE-001) — pendiente resultado
 - [x] Descubre: fotografías de inspiración con licencia, aviso ES/EN, verificación visual y documentación; búsqueda Google intacta
 - [x] Descubre: revisión autorizada de tarjetas propias y términos EEE documentada
 - [ ] Descubre: sustituir ilustraciones por lugares reales dinámicos — pendiente confirmación de Google/revisión jurídica del catálogo propio, aprobación del cambio de ADR-003 y conexión de servidor; búsqueda actual intacta
@@ -17,3 +17,4 @@
 
 - [ ] BILLING-001 manual test payment (4242), failed card, cancel renewal — pending user check
 - [x] BILLING-001.1 precios finales IVA incluido, sin recargos; obligaciones fiscales documentadas
+- [ ] RELEASE-001: migrar zod 3→4; decidir visibilidad pública de la Beta; clave Google para dominio publicado; admin real

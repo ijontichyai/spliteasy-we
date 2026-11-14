@@ -1,5 +1,10 @@
 # Changelog
 
+## RELEASE-001 — Auditoría pre-lanzamiento (2026-11-14)
+- Vista protegida: textos 'solo lectura, importes ocultos'.
+- Dependencias parcheadas (12 -> 3 avisos; queda zod 3). Actualización de TanStack revertida por incompatibilidad.
+- Informe: docs/release/release-001-audit.md. Sin publicar, sin pagos reales.
+
 ## BILLING-001.1 — 2026-11-14
 - Eliminada la gestión integral de Stripe (+3,5 %); sin cálculo automático de impuestos.
 - 1,49 / 3,99 / 29,99 € son importes finales; precios Sandbox conservados (no fue necesario sustituirlos).
