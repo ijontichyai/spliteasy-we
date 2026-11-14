@@ -29,6 +29,13 @@
       "when": 1794652392192,
       "tag": "0003_auth_002_1_rls_hardening",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1794654203973,
+      "tag": "0004_auth_002_2_admin_roles",
+      "breakpoints": true
     }
   ]
 }
