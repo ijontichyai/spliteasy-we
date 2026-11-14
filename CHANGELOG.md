@@ -1,5 +1,13 @@
 # Changelog
 
+## AUTH-002.1 — Endurecimiento RLS (R1, R2) — 14 nov 2026
+
+- **R1:** `shares_plan_with` exige ahora `status='active'` en ambos miembros. Los ex-participantes dejan de ver perfiles de su antiguo grupo y viceversa.
+- **R2 (vulnerabilidad corregida):** los usuarios podían actualizar `premium_sponsored` y `sponsor_id` de `plans` (autopatrocinio Premium). Se revoca el UPDATE de tabla a `anon` y `authenticated` (y todo acceso de `anon`), y se concede UPDATE solo en `name, type, start_date, end_date, city, estimated_budget, status`. Nuevo trigger `plans_protect` (`plans_protect_columns`) rechaza cambios de usuario en `premium_sponsored, sponsor_id, owner_id, archived_at, archived_by, currency, created_at`; las funciones del servidor (archivar) no se ven afectadas.
+- Migración: `drizzle/migrations/0003_auth_002_1_rls_hardening.sql`. Sin cambios de datos, frontend, login, roles ni pagos.
+- Verificado: permisos por columna (premium_sponsored/sponsor_id sin UPDATE; name sí; anon sin acceso), función y trigger presentes. Pendiente: prueba de comportamiento con 3 usuarios simulados (el acceso directo a la base de datos desde el entorno de pruebas no estuvo disponible).
+- Riesgos pendientes: R3–R6 del análisis AUTH-002.
+
 ## Descubre — fotografías de inspiración (13 nov 2026, UTC)
 - Sustituidas las cuatro ilustraciones por fotografías reales con licencia Pexels y créditos enlazados: playa mediterránea al amanecer, mercado local, montañas al atardecer y cena bajo luces cálidas.
 - WebP de 600/1200 px servidos por Lovable Assets, carga diferida y recorte 16:10. Aviso y textos alternativos ES/EN; retiradas las etiquetas ilustrativas de esta sección.

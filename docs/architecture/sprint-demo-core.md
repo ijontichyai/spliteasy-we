@@ -44,3 +44,9 @@ Migración `drizzle/migrations/0002_core_1_2_3.sql`:
 - Favoritos personales: la tabla y RLS existen, pero no hay pantalla.
 - Votaciones, itinerario, PDF, multidivisa, Premium y patrocinio del plan: no implementados. Los límites gratuitos se aplican siempre.
 - Cambiar roles y expulsar miembros: no implementado.
+
+
+## AUTH-002.1 — Endurecimiento
+
+- `shares_plan_with`: solo miembros activos en ambos lados.
+- `plans`: UPDATE solo por columnas editables (`name, type, start_date, end_date, city, estimated_budget, status`) + trigger `plans_protect` sobre columnas de Premium, propiedad y archivado. Política UPDATE owner/admin sin cambios.
