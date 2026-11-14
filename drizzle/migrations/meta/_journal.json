@@ -43,6 +43,13 @@
       "when": 1794654874821,
       "tag": "0005_auth_003_1_support_sessions",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1794654976079,
+      "tag": "0006_auth_003_1_fix_revoke_null_check",
+      "breakpoints": true
     }
   ]
 }
