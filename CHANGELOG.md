@@ -112,3 +112,6 @@
 
 ## AUTH-003 (diseño) — 2026-11-14
 - Propuesta de soporte seguro y "ver como usuario" sin suplantación real. Documento: docs/architecture/auth-003-support-sessions.md. Sin cambios en BD.
+
+## BILLING-001 — 2026-11-14
+- Premium subscriptions in test mode: three plans, /premium page with carousel and status, embedded checkout, success/cancel pages, billing portal, signed webhook, read-only subscriptions table. See docs/security/billing-001-report.md. Live not activated, not published.
