@@ -56,5 +56,5 @@ Decisión aprobada (Opción A): sin gestión integral de cumplimiento de Stripe 
 - Sandbox check (test account B): /premium loads the subscription state; choosing a plan creates the checkout session (200) and Stripe's embedded payment form loads.
 - Premium activation: webhook and `isPremiumActive` unchanged; covered by the existing unit tests.
 - NOT TESTED: completing a 4242 payment, a declined card, opening the subscription management page (needs an account with an active test subscription).
-- Quick security scan: only the intentional plan_limits info note. Deep scan re-run started; result pending.
+- Quick security scan: only the intentional plan_limits info note. Deep scan re-run (2026-11-14 18:37 UTC): no new findings; only the intentional plan_limits info note remains.
 - No publishing, Stripe Live remains off.
