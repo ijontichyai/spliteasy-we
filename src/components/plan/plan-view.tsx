@@ -43,6 +43,7 @@ export function PlanView({ data, actions, initialTab, protectedView = false }: {
   const money = (c: number) => protectedView ? t("support.hidden") : formatMoney(c, locale, plan.currency);
   const [editing, setEditing] = useState<string | null>(null);
   const [renaming, setRenaming] = useState<string | null>(null);
+  const [removing, setRemoving] = useState<string | null>(null);
   const runOrThrow = async (fn: () => Promise<void>, ok?: string) => {
     try { await fn(); if (ok) toast.success(ok); } catch (e) { toast.error(t(errorKey(e))); throw e; }
   };
@@ -107,12 +108,19 @@ export function PlanView({ data, actions, initialTab, protectedView = false }: {
                     const rm = actions.removeMember; if (!rm) return;
                     const why = canRemoveMember(myRole, m, me, balances[m.id] ?? 0);
                     if (why !== "ok") { toast.error(t(`err.${why}` as never)); return; }
-                    if (window.confirm(m.id === me ? t("member.leaveConfirm") : t("member.removeConfirm", { name: m.name }))) void run(() => rm(m.id), m.id === me ? t("member.left") : t("member.removed"));
+                    setRemoving(m.id);
                   }}>{m.id === me ? t("member.leave") : t("member.remove")}</Button>
                 )}
               </li>
             ))}
           </ul>
+          {removing && actions.removeMember && members.some((m) => m.id === removing) && (
+            <div role="alertdialog" aria-live="polite" className="flex flex-wrap items-center gap-2 rounded-2xl border border-destructive/40 bg-card p-3 text-sm">
+              <p className="flex-1">{removing === me ? t("member.leaveConfirm") : t("member.removeConfirm", { name: members.find((m) => m.id === removing)?.name ?? "" })}</p>
+              <Button size="sm" variant="destructive" onClick={() => { const rm = actions.removeMember; const id = removing; if (rm) void run(() => rm(id), id === me ? t("member.left") : t("member.removed")).then(() => setRemoving(null)); }}>{removing === me ? t("member.leave") : t("member.remove")}</Button>
+              <Button size="icon" variant="ghost" aria-label="Cancel" onClick={() => setRemoving(null)}><X className="size-4" /></Button>
+            </div>
+          )}
           {renaming && actions.renameMember && members.some((m) => m.id === renaming) && (
             <form className="flex gap-2" onSubmit={(e) => { e.preventDefault(); const n = String(new FormData(e.currentTarget).get("rename") ?? "").trim(); const rn = actions.renameMember; const id = renaming; if (n && rn) void run(() => rn(id, n)).then(() => setRenaming(null)); }}>
               <Input key={renaming} name="rename" maxLength={40} required autoFocus defaultValue={members.find((m) => m.id === renaming)?.name} aria-label={t("member.rename")} />
