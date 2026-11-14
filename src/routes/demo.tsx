@@ -36,6 +36,14 @@ function DemoPage() {
     updateExpense: (id, e) => set((d) => ({ ...d, expenses: d.expenses.map((x) => x.id === id ? { ...x, description: e.description, category: e.category, amountCents: e.amountCents, paidBy: e.paidBy, date: e.date, shares: e.shares, splitMethod: e.method, tipCents: e.tipCents, meta: e.meta } : x) })),
     deleteExpense: (id) => set((d) => ({ ...d, expenses: d.expenses.filter((e) => e.id !== id) })),
     proposeSettlement: (to, cents) => set((d) => ({ ...d, settlements: [{ id: nid("s"), from: d.me, to, cents, status: "proposed" }, ...d.settlements] })),
+    addMember: (name) => set((d) => d.memberLimit != null && d.members.length >= d.memberLimit ? d : ({ ...d, members: [...d.members, { id: nid("demo-p"), name, role: "member" }] })),
+    renameMember: (id, name) => set((d) => ({ ...d, members: d.members.map((m) => (m.id === id ? { ...m, name } : m)) })),
+    removeMember: (id) => set((d) => ({
+      ...d, me: d.me === id ? (d.members.find((m) => m.role === "owner")?.id ?? d.me) : d.me,
+      formerMembers: [...(d.formerMembers ?? []), ...d.members.filter((m) => m.id === id)],
+      members: d.members.filter((m) => m.id !== id),
+      settlements: d.settlements.map((s) => s.status === "proposed" && (s.from === id || s.to === id) ? { ...s, status: "cancelled" } : s),
+    })),
     respondSettlement: (id, s) => set((d) => {
       const st = d.settlements.find((x) => x.id === id);
       if (!st || st.to !== d.me) throw new Error("ONLY_RECEIVER");

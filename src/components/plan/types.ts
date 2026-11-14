@@ -38,11 +38,14 @@ export type PlanActions = {
   createInvite?: () => Promise<string>;
   revokeInvite?: (id: string) => Promise<void>;
   setArchived?: (archived: boolean) => Promise<void>;
+  removeMember?: (id: string) => Promise<void>;
+  addMember?: (name: string) => Promise<void>;
+  renameMember?: (id: string, name: string) => Promise<void>;
 };
 
 export type PlanData = {
   me: string; plan: PlanVM; members: MemberVM[]; places: PlaceVM[]; expenses: ExpenseVM[];
-  settlements: SettlementVM[]; invitations?: InvitationVM[]; memberLimit: number | null;
+  settlements: SettlementVM[]; formerMembers?: MemberVM[]; invitations?: InvitationVM[]; memberLimit: number | null;
 };
 
 export const PLAN_TABS = ["people", "places", "expenses", "balances"] as const;

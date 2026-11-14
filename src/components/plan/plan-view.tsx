@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useI18n } from "@/lib/i18n/context";
 import { errorKey } from "@/lib/errors";
+import { canRemoveMember } from "@/lib/members";
 import { computeBalances, formatMoney, simplifyDebts, splitEqual, toCents } from "@/lib/money";
 import {
   EXPENSE_CATEGORIES, PLACE_CATEGORIES,
@@ -35,7 +36,7 @@ export function PlanView({ data, actions, initialTab, protectedView = false }: {
   const readOnly = plan.archived || protectedView;
   const myRole = members.find((m) => m.id === me)?.role;
   const nameOf = (id: string) => {
-    const n = members.find((m) => m.id === id)?.name ?? "?";
+    const n = members.find((m) => m.id === id)?.name ?? data.formerMembers?.find((m) => m.id === id)?.name ?? t("member.former");
     return id === me ? `${n} (${t("common.you")})` : n;
   };
   const idx = (id: string) => Math.max(0, members.findIndex((m) => m.id === id));
@@ -97,9 +98,27 @@ export function PlanView({ data, actions, initialTab, protectedView = false }: {
                 <Avatar name={m.name} i={i} />
                 <span className="flex-1 font-medium">{nameOf(m.id)}</span>
                 <span className="rounded-full bg-muted px-2.5 py-0.5 text-xs text-muted-foreground">{t(`role.${m.role}`)}</span>
+                {!readOnly && actions.renameMember && (
+                  <Button size="icon" variant="ghost" aria-label={t("member.rename")} onClick={() => { const n = window.prompt(t("member.rename"), m.name)?.trim(); const rn = actions.renameMember; if (n && rn) void run(() => rn(m.id, n)); }}><Pencil className="size-4" /></Button>
+                )}
+                {!readOnly && actions.removeMember && m.role !== "owner" && (m.id === me || canRemoveMember(myRole, m, me, 0) === "ok") && (
+                  <Button size="sm" variant="ghost" onClick={() => {
+                    const rm = actions.removeMember; if (!rm) return;
+                    const why = canRemoveMember(myRole, m, me, balances[m.id] ?? 0);
+                    if (why !== "ok") { toast.error(t(`err.${why}` as never)); return; }
+                    if (window.confirm(m.id === me ? t("member.leaveConfirm") : t("member.removeConfirm", { name: m.name }))) void run(() => rm(m.id), m.id === me ? t("member.left") : t("member.removed"));
+                  }}>{m.id === me ? t("member.leave") : t("member.remove")}</Button>
+                )}
               </li>
             ))}
           </ul>
+          {!readOnly && actions.addMember && (data.memberLimit == null || members.length < data.memberLimit) && (
+            <form className="flex gap-2" onSubmit={(e) => { e.preventDefault(); const f = e.currentTarget; const n = String(new FormData(f).get("name") ?? "").trim(); const add = actions.addMember; if (n && add) void run(() => add(n)).then(() => f.reset()); }}>
+              <Input name="name" maxLength={40} placeholder={t("member.namePh")} aria-label={t("member.namePh")} required />
+              <Button type="submit" variant="secondary"><Plus className="size-4" />{t("member.add")}</Button>
+            </form>
+          )}
+          <p className="text-xs text-muted-foreground">{t("member.historyNote")}</p>
           {data.memberLimit != null && <p className="text-xs text-muted-foreground">{t("inv.limit", { n: data.memberLimit })}</p>}
           {actions.createInvite && (myRole === "owner" || myRole === "admin") && !readOnly && (
             <Invitations data={data} actions={actions} />
