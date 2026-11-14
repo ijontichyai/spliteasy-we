@@ -100,7 +100,10 @@ export type Database = {
           idempotency_key: string
           paid_by: string
           plan_id: string
+          split_meta: Json
+          split_method: string
           split_type: Database["public"]["Enums"]["split_type"]
+          tip_amount: number
           updated_at: string
         }
         Insert: {
@@ -116,7 +119,10 @@ export type Database = {
           idempotency_key: string
           paid_by: string
           plan_id: string
+          split_meta?: Json
+          split_method?: string
           split_type?: Database["public"]["Enums"]["split_type"]
+          tip_amount?: number
           updated_at?: string
         }
         Update: {
@@ -132,7 +138,10 @@ export type Database = {
           idempotency_key?: string
           paid_by?: string
           plan_id?: string
+          split_meta?: Json
+          split_method?: string
           split_type?: Database["public"]["Enums"]["split_type"]
+          tip_amount?: number
           updated_at?: string
         }
         Relationships: [
@@ -984,6 +993,7 @@ export type Database = {
         Returns: string
       }
       delete_expense: { Args: { _expense: string }; Returns: undefined }
+      expense_is_locked: { Args: { _expense: string }; Returns: boolean }
       has_active_subscription: {
         Args: { check_env?: string }
         Returns: boolean
@@ -1044,10 +1054,13 @@ export type Database = {
           _date?: string
           _description: string
           _idempotency_key: string
+          _meta?: Json
+          _method?: string
           _paid_by: string
           _plan: string
           _shares: Json
           _split: Database["public"]["Enums"]["split_type"]
+          _tip?: number
         }
         Returns: string
       }
@@ -1089,6 +1102,33 @@ export type Database = {
       }
       support_view_account: { Args: { _grant: string }; Returns: Json }
       support_view_plan: { Args: { _grant: string }; Returns: Json }
+      update_expense: {
+        Args: {
+          _amount: number
+          _category: Database["public"]["Enums"]["expense_category"]
+          _date: string
+          _description: string
+          _expected_updated_at: string
+          _expense: string
+          _meta: Json
+          _method: string
+          _paid_by: string
+          _shares: Json
+          _tip: number
+        }
+        Returns: undefined
+      }
+      validate_expense_input: {
+        Args: {
+          _amount: number
+          _method: string
+          _paid_by: string
+          _plan: string
+          _shares: Json
+          _tip: number
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "admin" | "support"

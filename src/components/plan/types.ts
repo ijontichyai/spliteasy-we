@@ -1,3 +1,4 @@
+import type { SplitMeta, SplitMethod } from "@/lib/split";
 export type Role = "owner" | "admin" | "member";
 export type PlaceCategory = "restaurant" | "activity" | "lodging" | "sight" | "transport" | "other";
 export type PlaceStatus = "proposed" | "chosen" | "discarded";
@@ -16,17 +17,21 @@ export type PlanVM = {
 };
 export type MemberVM = { id: string; name: string; role: Role };
 export type PlaceVM = { id: string; name: string; category: PlaceCategory; address: string | null; url: string | null; note: string | null; status: PlaceStatus; addedBy: string };
-export type ExpenseVM = { id: string; description: string; category: ExpenseCategory; amountCents: number; paidBy: string; date: string; shares: Record<string, number>; createdBy: string };
+export type ExpenseVM = {
+  id: string; description: string; category: ExpenseCategory; amountCents: number; paidBy: string; date: string; shares: Record<string, number>; createdBy: string;
+  splitMethod?: SplitMethod; tipCents?: number; meta?: SplitMeta | null; updatedAt?: string; locked?: boolean;
+};
 export type SettlementVM = { id: string; from: string; to: string; cents: number; status: SettlementStatus };
 export type InvitationVM = { id: string; state: "pending" | "used" | "revoked" | "expired"; expiresAt: string };
 
 export type NewPlace = { name: string; category: PlaceCategory; address: string; url: string; note: string };
-export type NewExpense = { description: string; category: ExpenseCategory; amountCents: number; paidBy: string; split: "equal" | "custom"; shares: Record<string, number> };
+export type NewExpense = { description: string; category: ExpenseCategory; amountCents: number; paidBy: string; date: string; method: SplitMethod; tipCents: number; meta: SplitMeta; shares: Record<string, number>; idempotencyKey?: string };
 
 export type PlanActions = {
   addPlace: (p: NewPlace) => Promise<void>;
   setPlaceStatus: (id: string, s: PlaceStatus) => Promise<void>;
   addExpense: (e: NewExpense) => Promise<void>;
+  updateExpense: (id: string, e: NewExpense) => Promise<void>;
   deleteExpense: (id: string) => Promise<void>;
   proposeSettlement: (to: string, cents: number) => Promise<void>;
   respondSettlement: (id: string, s: SettlementStatus) => Promise<void>;

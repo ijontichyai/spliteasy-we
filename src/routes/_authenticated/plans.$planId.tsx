@@ -33,6 +33,9 @@ async function rpc(fn: string, args: Record<string, unknown>) {
   return data as unknown;
 }
 
+const sharesArg = (shares: Record<string, number>) =>
+  Object.entries(shares).filter(([, c]) => c > 0).map(([user_id, c]) => ({ user_id, amount: fromCents(c) }));
+
 function PlanPage() {
   const { planId } = Route.useParams();
   const { tab } = Route.useSearch();
@@ -47,8 +50,17 @@ function PlanPage() {
     addExpense: async (e) => {
       await rpc("save_expense", {
         _plan: planId, _description: e.description, _category: e.category, _amount: fromCents(e.amountCents), _paid_by: e.paidBy,
-        _split: e.split, _shares: Object.entries(e.shares).map(([user_id, c]) => ({ user_id, amount: fromCents(c) })),
-        _idempotency_key: crypto.randomUUID(),
+        _split: e.method === "equal" ? "equal" : "custom", _shares: sharesArg(e.shares),
+        _idempotency_key: e.idempotencyKey ?? crypto.randomUUID(), _date: e.date, _method: e.method, _tip: fromCents(e.tipCents), _meta: e.meta,
+      });
+      await refresh();
+    },
+    updateExpense: async (id, e) => {
+      const prev = data.expenses.find((x) => x.id === id);
+      await rpc("update_expense", {
+        _expense: id, _expected_updated_at: prev?.updatedAt ?? null, _description: e.description, _category: e.category,
+        _amount: fromCents(e.amountCents), _paid_by: e.paidBy, _shares: sharesArg(e.shares), _date: e.date,
+        _method: e.method, _tip: fromCents(e.tipCents), _meta: e.meta,
       });
       await refresh();
     },

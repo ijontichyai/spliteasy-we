@@ -15,7 +15,7 @@ import { supportPortal } from "@/lib/support.functions";
 import { grantOpen, sessionSeconds, type SupportInput, type SupportGrant, type ProtectedView } from "@/lib/support-schema";
 
 const blocked = async () => { throw new Error("FORBIDDEN"); };
-const noActions: PlanActions = { addPlace: blocked, setPlaceStatus: blocked, addExpense: blocked, deleteExpense: blocked, proposeSettlement: blocked, respondSettlement: blocked };
+const noActions: PlanActions = { addPlace: blocked, setPlaceStatus: blocked, addExpense: blocked, updateExpense: blocked, deleteExpense: blocked, proposeSettlement: blocked, respondSettlement: blocked };
 
 export function SupportPortal({ admin = false }: { admin?: boolean }) {
   const { t } = useI18n();

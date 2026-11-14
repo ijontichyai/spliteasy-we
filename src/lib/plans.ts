@@ -1,6 +1,7 @@
 import { queryOptions } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toCents } from "@/lib/money";
+import type { SplitMeta, SplitMethod } from "@/lib/split";
 import type { InvitationVM, PlanData, PlanType } from "@/components/plan/types";
 
 async function uid() {
@@ -35,8 +36,8 @@ export const planQuery = (planId: string) =>
         supabase.from("plans").select("*").eq("id", planId).maybeSingle(),
         supabase.from("plan_members").select("user_id, role, status").eq("plan_id", planId).eq("status", "active").order("joined_at"),
         supabase.from("plan_places").select("id, status, note, added_by, places(name, category, address, url)").eq("plan_id", planId).order("created_at"),
-        supabase.from("expenses").select("id, description, category, amount, paid_by, expense_date, created_by, expense_shares(user_id, amount)").eq("plan_id", planId).is("deleted_at", null).order("created_at", { ascending: false }),
-        supabase.from("settlements").select("id, from_user, to_user, amount, status").eq("plan_id", planId).order("created_at", { ascending: false }),
+        supabase.from("expenses").select("id, description, category, amount, paid_by, expense_date, created_by, created_at, updated_at, split_method, tip_amount, split_meta, expense_shares(user_id, amount)").eq("plan_id", planId).is("deleted_at", null).order("created_at", { ascending: false }),
+        supabase.from("settlements").select("id, from_user, to_user, amount, status, confirmed_at").eq("plan_id", planId).order("created_at", { ascending: false }),
         supabase.from("invitations").select("id, expires_at, max_uses, use_count, revoked_at").eq("plan_id", planId).order("created_at", { ascending: false }).limit(10),
         supabase.from("plan_limits").select("max_members_per_plan").eq("tier", "free").maybeSingle(),
       ]);
@@ -63,7 +64,9 @@ export const planQuery = (planId: string) =>
         }),
         expenses: (expenses.data ?? []).map((e) => ({
           id: e.id, description: e.description, category: e.category, amountCents: toCents(e.amount), paidBy: e.paid_by,
-          date: e.expense_date, createdBy: e.created_by,
+          date: e.expense_date, createdBy: e.created_by, updatedAt: e.updated_at,
+          splitMethod: e.split_method as SplitMethod, tipCents: toCents(e.tip_amount), meta: (e.split_meta && "participants" in (e.split_meta as object) ? e.split_meta : null) as SplitMeta | null,
+          locked: (settlements.data ?? []).some((s) => s.status === "confirmed" && s.confirmed_at != null && s.confirmed_at >= e.created_at),
           shares: Object.fromEntries((e.expense_shares ?? []).map((s) => [s.user_id, toCents(s.amount)])),
         })),
         settlements: (settlements.data ?? []).map((s) => ({ id: s.id, from: s.from_user, to: s.to_user, cents: toCents(s.amount), status: s.status })),
