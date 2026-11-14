@@ -32,7 +32,8 @@ function DemoPage() {
   const actions: PlanActions = {
     addPlace: (p) => set((d) => ({ ...d, places: [...d.places, { id: nid("pl"), name: p.name, category: p.category, address: p.address || null, url: p.url || null, note: p.note || null, status: "proposed", addedBy: d.me }] })),
     setPlaceStatus: (id, s) => set((d) => ({ ...d, places: d.places.map((p) => (p.id === id ? { ...p, status: s } : p)) })),
-    addExpense: (e) => set((d) => ({ ...d, expenses: [{ id: nid("e"), description: e.description, category: e.category, amountCents: e.amountCents, paidBy: e.paidBy, date: new Date().toISOString().slice(0, 10), createdBy: d.me, shares: e.shares }, ...d.expenses] })),
+    addExpense: (e) => set((d) => ({ ...d, expenses: [{ id: nid("e"), description: e.description, category: e.category, amountCents: e.amountCents, paidBy: e.paidBy, date: e.date, createdBy: d.me, shares: e.shares, splitMethod: e.method, tipCents: e.tipCents, meta: e.meta }, ...d.expenses] })),
+    updateExpense: (id, e) => set((d) => ({ ...d, expenses: d.expenses.map((x) => x.id === id ? { ...x, description: e.description, category: e.category, amountCents: e.amountCents, paidBy: e.paidBy, date: e.date, shares: e.shares, splitMethod: e.method, tipCents: e.tipCents, meta: e.meta } : x) })),
     deleteExpense: (id) => set((d) => ({ ...d, expenses: d.expenses.filter((e) => e.id !== id) })),
     proposeSettlement: (to, cents) => set((d) => ({ ...d, settlements: [{ id: nid("s"), from: d.me, to, cents, status: "proposed" }, ...d.settlements] })),
     respondSettlement: (id, s) => set((d) => {
