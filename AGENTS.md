@@ -37,3 +37,5 @@ use the editor.
 - Mobile navigation lives in src/components/bottom-nav.tsx (sm:hidden); the root wraps <Outlet /> in pb-safe-nav so pages never sit under it — keep that wrapper when editing __root.
 - Illustrative (non-real) place content must show the "Ilustrativo" label and keep a data-google-slot area free for Places UI Kit (ADR-003).
 - Editorial inspiration photographs use licensed CDN assets with responsive sources and provenance in docs/architecture/discover-photography.md; they remain separate from Google place records and reserved Google slots.
+- Support UI uses authenticated server functions and the audited support_portal DB dispatcher; admin-only preview operations never use privileged clients or replace the administrator's session.
+- Protected PlanView renders redacted structure only with writes disabled and monetary values hidden; one-time activation codes remain in transient component state, never storage or query caches.
