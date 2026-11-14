@@ -150,3 +150,7 @@
 
 ## 2026-11-14 BILLING-001.2
 - Stripe checkout/portal return URLs fixed server-side to SplitEasy origins; 2 tests added (26/26).
+
+## BRAND-001.2 — Corrección final de identidad visual
+- Sustituidos logotipos claro/oscuro, símbolo, icono 256, favicon transparente (32 px) e iconos de inicio azul marino (192/512) con los archivos de SplitEasy_Brand_Replacement_v2. Sin regenerar arte.
+- Dimensiones del logotipo actualizadas a 1920×550; enlaces con `?v=2` para invalidar caché.

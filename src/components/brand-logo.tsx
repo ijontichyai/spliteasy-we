@@ -3,12 +3,12 @@
 export function BrandLogo({ className = "h-10" }: { className?: string }) {
   return (
     <>
-      <img src="/brand/spliteasy-logo-light.png" alt="SplitEasy" width={1100} height={299} className={`${className} w-auto dark:hidden`} />
-      <img src="/brand/spliteasy-logo-dark.png" alt="SplitEasy" width={1100} height={299} className={`${className} hidden w-auto dark:block`} />
+      <img src="/brand/spliteasy-logo-light.png?v=2" alt="SplitEasy" width={1920} height={550} className={`${className} w-auto dark:hidden`} />
+      <img src="/brand/spliteasy-logo-dark.png?v=2" alt="SplitEasy" width={1920} height={550} className={`${className} hidden w-auto dark:block`} />
     </>
   );
 }
 
 export function BrandIcon({ className = "size-9" }: { className?: string }) {
-  return <img src="/brand/spliteasy-icon-256.png" alt="SplitEasy" width={256} height={256} className={className} />;
+  return <img src="/brand/spliteasy-icon-256.png?v=2" alt="SplitEasy" width={256} height={256} className={className} />;
 }
