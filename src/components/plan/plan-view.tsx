@@ -1,6 +1,7 @@
 import { useMemo, useState, type FormEvent } from "react";
+import { ExpenseForm } from "./expense-form";
 import { toast } from "sonner";
-import { ArrowRight, Check, Copy, Link2, MapPin, Plus, Trash2, Users, Wallet, X } from "lucide-react";
+import { ArrowRight, Check, Copy, Link2, Lock, MapPin, Pencil, Plus, Trash2, Users, Wallet, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -39,6 +40,10 @@ export function PlanView({ data, actions, initialTab, protectedView = false }: {
   };
   const idx = (id: string) => Math.max(0, members.findIndex((m) => m.id === id));
   const money = (c: number) => protectedView ? t("support.hidden") : formatMoney(c, locale, plan.currency);
+  const [editing, setEditing] = useState<string | null>(null);
+  const runOrThrow = async (fn: () => Promise<void>, ok?: string) => {
+    try { await fn(); if (ok) toast.success(ok); } catch (e) { toast.error(t(errorKey(e))); throw e; }
+  };
   const run = async (fn: () => Promise<void>, ok?: string) => {
     try { await fn(); if (ok) toast.success(ok); } catch (e) { toast.error(t(errorKey(e))); }
   };
@@ -137,26 +142,39 @@ export function PlanView({ data, actions, initialTab, protectedView = false }: {
         </TabsContent>
 
         <TabsContent value="expenses" className="mt-4 space-y-4">
-          {!readOnly && <ExpenseForm data={data} onAdd={(e) => run(() => actions.addExpense(e), t("exp.saved"))} />}
+          {!readOnly && <ExpenseForm data={data} onSubmit={(e) => runOrThrow(() => actions.addExpense(e), t("exp.saved"))} />}
           {activeExpenses.length === 0 ? (
             <p className="text-sm text-muted-foreground">{t("exp.empty")}</p>
           ) : (
             <ul className="divide-y divide-border rounded-2xl border border-border bg-card">
-              {activeExpenses.map((e) => (
+              {activeExpenses.map((e) => {
+                const canManage = !readOnly && (e.createdBy === me || myRole !== "member");
+                if (editing === e.id) return (
+                  <li key={e.id} className="p-2">
+                    <ExpenseForm data={data} expense={e} onClose={() => setEditing(null)} onSubmit={(x) => runOrThrow(() => actions.updateExpense(e.id, x), t("exp.updated"))} />
+                  </li>
+                );
+                return (
                 <li key={e.id} className="flex items-center gap-3 p-3">
                   <Avatar name={members[idx(e.paidBy)]?.name ?? "?"} i={idx(e.paidBy)} />
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-medium">{e.description}</p>
                     <p className="text-xs text-muted-foreground">
-                      {t(`ecat.${e.category}`)} · {t("exp.paidLine", { name: nameOf(e.paidBy), amount: money(e.amountCents) })} · {Object.keys(e.shares).length}/{members.length}
+                      {t(`ecat.${e.category}`)} · {e.date} · {t("exp.paidLine", { name: nameOf(e.paidBy), amount: money(e.amountCents) })} · {Object.keys(e.shares).length}/{members.length}
+                      {e.splitMethod && e.splitMethod !== "equal" ? ` · ${t(`exp.m.${e.splitMethod}`)}` : ""}
+                      {(e.tipCents ?? 0) > 0 ? ` · ${t("exp.tipLine", { amount: money(e.tipCents ?? 0) })}` : ""}
                     </p>
                   </div>
-                  <span className="font-display font-semibold">{money(e.amountCents)}</span>
-                  {!readOnly && (e.createdBy === me || myRole !== "member") && (
+                  <span className="font-display font-semibold tabular-nums">{money(e.amountCents)}</span>
+                  {canManage && (e.locked ? (
+                    <span className="inline-flex items-center text-muted-foreground" title={t("exp.locked")} aria-label={t("exp.locked")}><Lock className="size-4" /></span>
+                  ) : (<>
+                    <Button size="icon" variant="ghost" aria-label={t("exp.edit")} onClick={() => setEditing(e.id)}><Pencil className="size-4" /></Button>
                     <Button size="icon" variant="ghost" aria-label={t("common.delete")} onClick={() => run(() => actions.deleteExpense(e.id))}><Trash2 className="size-4" /></Button>
-                  )}
+                  </>))}
                 </li>
-              ))}
+                );
+              })}
             </ul>
           )}
         </TabsContent>
@@ -288,86 +306,6 @@ function PlaceForm({ onAdd }: { onAdd: (p: { name: string; category: PlaceCatego
       <div className="space-y-1.5"><Label htmlFor="pl-url">{t("place.url")}</Label><Input id="pl-url" type="url" pattern="https?://.*" value={f.url} onChange={(e) => setF({ ...f, url: e.target.value })} /></div>
       <div className="space-y-1.5 sm:col-span-2"><Label htmlFor="pl-note">{t("place.note")}</Label><Input id="pl-note" maxLength={300} value={f.note} onChange={(e) => setF({ ...f, note: e.target.value })} /></div>
       <div className="flex gap-2 sm:col-span-2"><Button type="submit">{t("common.save")}</Button><Button type="button" variant="ghost" onClick={() => setOpen(false)}>{t("common.cancel")}</Button></div>
-    </form>
-  );
-}
-
-function ExpenseForm({ data, onAdd }: { data: PlanData; onAdd: (e: import("./types").NewExpense) => Promise<void> }) {
-  const { t, locale } = useI18n();
-  const { members, me } = data;
-  const [open, setOpen] = useState(false);
-  const [description, setDescription] = useState("");
-  const [category, setCategory] = useState<ExpenseCategory>("food");
-  const [amount, setAmount] = useState("");
-  const [paidBy, setPaidBy] = useState(me);
-  const [split, setSplit] = useState<"equal" | "custom">("equal");
-  const [included, setIncluded] = useState<string[]>(members.map((m) => m.id));
-  const [custom, setCustom] = useState<Record<string, string>>({});
-  const [busy, setBusy] = useState(false);
-
-  const totalCents = toCents(amount || 0);
-  const shares = split === "equal"
-    ? splitEqual(totalCents, included)
-    : Object.fromEntries(included.map((id) => [id, toCents(custom[id] || 0)]));
-  const assigned = Object.values(shares).reduce((a, c) => a + c, 0);
-  const diff = totalCents - assigned;
-  const valid = description.trim() && totalCents > 0 && included.length > 0 && diff === 0;
-
-  if (!open) return <Button onClick={() => setOpen(true)}><Plus className="size-4" />{t("exp.new")}</Button>;
-
-  const submit = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!valid) return;
-    setBusy(true);
-    try {
-      await onAdd({ description: description.trim(), category, amountCents: totalCents, paidBy, split, shares });
-      setDescription(""); setAmount(""); setCustom({}); setOpen(false);
-    } finally { setBusy(false); }
-  };
-
-  return (
-    <form onSubmit={submit} className="space-y-4 rounded-2xl border border-border bg-card p-4">
-      <div className="grid gap-3 sm:grid-cols-2">
-        <div className="space-y-1.5 sm:col-span-2"><Label htmlFor="ex-desc">{t("exp.description")}</Label><Input id="ex-desc" required maxLength={120} value={description} onChange={(e) => setDescription(e.target.value)} /></div>
-        <div className="space-y-1.5"><Label htmlFor="ex-amount">{t("exp.amount")}</Label><Input id="ex-amount" required inputMode="decimal" type="number" min="0.01" step="0.01" value={amount} onChange={(e) => setAmount(e.target.value)} /></div>
-        <div className="space-y-1.5"><Label htmlFor="ex-cat">{t("exp.category")}</Label>
-          <select id="ex-cat" className={selectCls} value={category} onChange={(e) => setCategory(e.target.value as ExpenseCategory)}>
-            {EXPENSE_CATEGORIES.map((c) => <option key={c} value={c}>{t(`ecat.${c}`)}</option>)}
-          </select></div>
-        <div className="space-y-1.5"><Label htmlFor="ex-paid">{t("exp.paidBy")}</Label>
-          <select id="ex-paid" className={selectCls} value={paidBy} onChange={(e) => setPaidBy(e.target.value)}>
-            {members.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}
-          </select></div>
-        <div className="space-y-1.5"><Label htmlFor="ex-split">{t("exp.split")}</Label>
-          <select id="ex-split" className={selectCls} value={split} onChange={(e) => setSplit(e.target.value as "equal" | "custom")}>
-            <option value="equal">{t("exp.equal")}</option><option value="custom">{t("exp.custom")}</option>
-          </select></div>
-      </div>
-      <fieldset>
-        <legend className="text-sm font-medium">{t("exp.forWhom")}</legend>
-        <ul className="mt-2 space-y-2">
-          {members.map((m) => {
-            const on = included.includes(m.id);
-            return (
-              <li key={m.id} className="flex items-center gap-3">
-                <input id={`inc-${m.id}`} type="checkbox" className="size-4 accent-primary" checked={on}
-                  onChange={() => setIncluded(on ? included.filter((x) => x !== m.id) : [...included, m.id])} />
-                <label htmlFor={`inc-${m.id}`} className="flex-1 text-sm">{m.name}</label>
-                {split === "custom" && on ? (
-                  <Input className="h-9 w-28" type="number" min="0" step="0.01" inputMode="decimal" aria-label={m.name}
-                    value={custom[m.id] ?? ""} onChange={(e) => setCustom({ ...custom, [m.id]: e.target.value })} />
-                ) : (
-                  <span className="w-28 text-right text-sm text-muted-foreground">{on ? formatMoney(shares[m.id] ?? 0, locale) : "—"}</span>
-                )}
-              </li>
-            );
-          })}
-        </ul>
-        <p className={`mt-2 text-xs ${diff === 0 ? "text-primary" : "text-destructive"}`}>
-          {diff === 0 ? t("exp.ok") : t("exp.remaining", { amount: formatMoney(diff, locale) })}
-        </p>
-      </fieldset>
-      <div className="flex gap-2"><Button type="submit" disabled={!valid || busy}>{t("common.save")}</Button><Button type="button" variant="ghost" onClick={() => setOpen(false)}>{t("common.cancel")}</Button></div>
     </form>
   );
 }
