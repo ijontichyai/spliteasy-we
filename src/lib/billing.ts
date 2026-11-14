@@ -35,3 +35,11 @@ export function checkoutSessionParams(o: { stripePriceId: string; returnUrl: str
     subscription_data: { metadata: { userId: o.userId } },
   };
 }
+
+const TRUSTED_ORIGINS = [/^https:\/\/spliteasy-we\.lovable\.app$/, /^https:\/\/[a-z0-9-]+--306db1f6-82ab-49c3-a246-dc7ba7faa244\.lovable\.app$/, /^https:\/\/306db1f6-82ab-49c3-a246-dc7ba7faa244\.lovableproject\.com$/, /^http:\/\/localhost(:\d+)?$/];
+export const DEFAULT_ORIGIN = "https://spliteasy-we.lovable.app";
+/** Only SplitEasy's own origins; anything else falls back to the published domain. */
+export const safeOrigin = (origin: string | undefined): string =>
+  origin && TRUSTED_ORIGINS.some((r) => r.test(origin)) ? origin : DEFAULT_ORIGIN;
+export const checkoutReturnUrl = (origin: string) => `${origin}/checkout/return?session_id={CHECKOUT_SESSION_ID}`;
+export const portalReturnUrl = (origin: string) => `${origin}/premium`;

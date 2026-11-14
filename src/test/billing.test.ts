@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { PREMIUM_PLANS, isPremiumActive, isPremiumPriceId, checkoutSessionParams } from "@/lib/billing";
+import { PREMIUM_PLANS, isPremiumActive, isPremiumPriceId, checkoutSessionParams, safeOrigin, checkoutReturnUrl, portalReturnUrl } from "@/lib/billing";
 
 const now = new Date("2026-11-14T12:00:00Z");
 describe("billing rules", () => {
@@ -25,5 +25,18 @@ describe("checkout sin recargos", () => {
     const p = checkoutSessionParams({ stripePriceId: "price_x", returnUrl: "https://x", customerId: "cus", userId: "u" }) as Record<string, unknown>;
     expect(p["managed_payments"]).toBeUndefined();
     expect(p["automatic_tax"]).toBeUndefined();
+  });
+});
+
+describe("Stripe return destinations", () => {
+  it("checkout returns only to SplitEasy's confirmation page", () => {
+    expect(checkoutReturnUrl(safeOrigin("https://evil.example"))).toBe("https://spliteasy-we.lovable.app/checkout/return?session_id={CHECKOUT_SESSION_ID}");
+    expect(checkoutReturnUrl(safeOrigin("https://spliteasy-we.lovable.app.evil.com"))).toBe("https://spliteasy-we.lovable.app/checkout/return?session_id={CHECKOUT_SESSION_ID}");
+    expect(checkoutReturnUrl(safeOrigin("https://spliteasy-we.lovable.app"))).toBe("https://spliteasy-we.lovable.app/checkout/return?session_id={CHECKOUT_SESSION_ID}");
+  });
+  it("subscription management returns only to SplitEasy's Premium page", () => {
+    expect(portalReturnUrl(safeOrigin("https://evil.example"))).toBe("https://spliteasy-we.lovable.app/premium");
+    expect(portalReturnUrl(safeOrigin(undefined))).toBe("https://spliteasy-we.lovable.app/premium");
+    expect(portalReturnUrl(safeOrigin("http://localhost:8080"))).toBe("http://localhost:8080/premium");
   });
 });
