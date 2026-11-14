@@ -646,6 +646,208 @@ export type Database = {
           },
         ]
       }
+      support_grants: {
+        Row: {
+          authorized_at: string
+          end_reason: string | null
+          ended_at: string | null
+          expires_at: string | null
+          id: string
+          needs_organizer: boolean
+          nonce_hash: string
+          organizer_approved_at: string | null
+          organizer_approved_by: string | null
+          plan_id: string | null
+          request_id: string
+          revoked_at: string | null
+          revoked_by: string | null
+          staff_id: string
+          start_deadline: string
+          started_at: string | null
+          target: Database["public"]["Enums"]["support_target"]
+          used: boolean
+          user_id: string
+        }
+        Insert: {
+          authorized_at?: string
+          end_reason?: string | null
+          ended_at?: string | null
+          expires_at?: string | null
+          id?: string
+          needs_organizer?: boolean
+          nonce_hash: string
+          organizer_approved_at?: string | null
+          organizer_approved_by?: string | null
+          plan_id?: string | null
+          request_id: string
+          revoked_at?: string | null
+          revoked_by?: string | null
+          staff_id: string
+          start_deadline?: string
+          started_at?: string | null
+          target: Database["public"]["Enums"]["support_target"]
+          used?: boolean
+          user_id: string
+        }
+        Update: {
+          authorized_at?: string
+          end_reason?: string | null
+          ended_at?: string | null
+          expires_at?: string | null
+          id?: string
+          needs_organizer?: boolean
+          nonce_hash?: string
+          organizer_approved_at?: string | null
+          organizer_approved_by?: string | null
+          plan_id?: string | null
+          request_id?: string
+          revoked_at?: string | null
+          revoked_by?: string | null
+          staff_id?: string
+          start_deadline?: string
+          started_at?: string | null
+          target?: Database["public"]["Enums"]["support_target"]
+          used?: boolean
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_grants_organizer_approved_by_fkey"
+            columns: ["organizer_approved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "support_grants_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "support_grants_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "support_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "support_grants_revoked_by_fkey"
+            columns: ["revoked_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "support_grants_staff_id_fkey"
+            columns: ["staff_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "support_grants_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      support_notifications: {
+        Row: {
+          created_at: string
+          ends_at: string | null
+          grant_id: string
+          id: string
+          kind: string
+          read_at: string | null
+          starts_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          ends_at?: string | null
+          grant_id: string
+          id?: string
+          kind: string
+          read_at?: string | null
+          starts_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          ends_at?: string | null
+          grant_id?: string
+          id?: string
+          kind?: string
+          read_at?: string | null
+          starts_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_notifications_grant_id_fkey"
+            columns: ["grant_id"]
+            isOneToOne: false
+            referencedRelation: "support_grants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "support_notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      support_requests: {
+        Row: {
+          assigned_to: string | null
+          created_at: string
+          id: string
+          resolved_at: string | null
+          status: string
+          topic: string
+          user_id: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          created_at?: string
+          id?: string
+          resolved_at?: string | null
+          status?: string
+          topic: string
+          user_id: string
+        }
+        Update: {
+          assigned_to?: string | null
+          created_at?: string
+          id?: string
+          resolved_at?: string | null
+          status?: string
+          topic?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_requests_assigned_to_fkey"
+            columns: ["assigned_to"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "support_requests_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           granted_at: string
@@ -714,6 +916,13 @@ export type Database = {
         Args: { _archive: boolean; _plan: string }
         Returns: undefined
       }
+      assert_support_grant: {
+        Args: {
+          _grant: string
+          _target: Database["public"]["Enums"]["support_target"]
+        }
+        Returns: string
+      }
       create_invitation: { Args: { _plan: string }; Returns: string }
       create_plan: {
         Args: {
@@ -733,6 +942,7 @@ export type Database = {
       }
       is_admin: { Args: never; Returns: boolean }
       is_plan_member: { Args: { _plan: string }; Returns: boolean }
+      is_support_staff: { Args: never; Returns: boolean }
       log_admin_action: {
         Args: {
           _action: string
@@ -797,6 +1007,25 @@ export type Database = {
         Returns: undefined
       }
       shares_plan_with: { Args: { _other: string }; Returns: boolean }
+      support_grant_approve_plan: { Args: { _grant: string }; Returns: Json }
+      support_grant_authorize: {
+        Args: {
+          _plan: string
+          _request: string
+          _target: Database["public"]["Enums"]["support_target"]
+        }
+        Returns: Json
+      }
+      support_grant_revoke: { Args: { _grant: string }; Returns: Json }
+      support_request_accept: { Args: { _request: string }; Returns: Json }
+      support_request_create: { Args: { _topic: string }; Returns: Json }
+      support_session_end: { Args: { _grant: string }; Returns: Json }
+      support_session_start: {
+        Args: { _grant: string; _token: string }
+        Returns: Json
+      }
+      support_view_account: { Args: { _grant: string }; Returns: Json }
+      support_view_plan: { Args: { _grant: string }; Returns: Json }
     }
     Enums: {
       app_role: "admin" | "support"
@@ -821,6 +1050,7 @@ export type Database = {
         | "other"
       settlement_status: "proposed" | "confirmed" | "rejected" | "cancelled"
       split_type: "equal" | "custom"
+      support_target: "account" | "plan"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -972,6 +1202,7 @@ export const Constants = {
       ],
       settlement_status: ["proposed", "confirmed", "rejected", "cancelled"],
       split_type: ["equal", "custom"],
+      support_target: ["account", "plan"],
     },
   },
 } as const
