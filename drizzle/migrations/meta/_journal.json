@@ -64,6 +64,13 @@
       "when": 1794657493622,
       "tag": "0008_billing_001_subscriptions",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1794682145679,
+      "tag": "0009_expenses_002_edit_methods_tips",
+      "breakpoints": true
     }
   ]
 }
