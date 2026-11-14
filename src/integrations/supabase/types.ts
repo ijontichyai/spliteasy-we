@@ -1039,6 +1039,10 @@ export type Database = {
         }
         Returns: string
       }
+      remove_plan_member: {
+        Args: { _plan: string; _user: string }
+        Returns: undefined
+      }
       respond_settlement: {
         Args: {
           _id: string

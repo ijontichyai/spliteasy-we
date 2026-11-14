@@ -41,6 +41,7 @@ function PlanPage() {
   const { tab } = Route.useSearch();
   const { t } = useI18n();
   const qc = useQueryClient();
+  const navigate = Route.useNavigate();
   const { data } = useSuspenseQuery(planQuery(planId));
   const refresh = () => qc.invalidateQueries({ queryKey: ["plan", planId] });
 
@@ -69,6 +70,11 @@ function PlanPage() {
     respondSettlement: async (id, s) => { await rpc("respond_settlement", { _id: id, _status: s }); await refresh(); },
     createInvite: async () => { const token = (await rpc("create_invitation", { _plan: planId })) as string; await refresh(); return token; },
     revokeInvite: async (id) => { await rpc("revoke_invitation", { _id: id }); await refresh(); },
+    removeMember: async (id) => {
+      await rpc("remove_plan_member", { _plan: planId, _user: id });
+      if (id === data.me) { await qc.invalidateQueries({ queryKey: ["plans"] }); await navigate({ to: "/app" }); return; }
+      await refresh();
+    },
     setArchived: async (archived) => { await rpc("archive_plan", { _plan: planId, _archive: archived }); await refresh(); await qc.invalidateQueries({ queryKey: ["plans"] }); },
   };
 
