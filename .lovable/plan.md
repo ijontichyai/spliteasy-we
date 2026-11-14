@@ -1,26 +1,17 @@
-# BILLING-001.1 — Precios con IVA incluido y revisión del recargo del 3,5 %
+# BILLING-001.1 — Opción A: precios finales sin recargos (solo Stripe Sandbox)
 
-## Qué es el recargo del 3,5 %
-- Proveedor: **Stripe** (mismo proveedor ya elegido; no es un tercero). Es la gestión integral de cumplimiento de Stripe ("Managed Payments"), activada hoy en el pago de prueba (`managed_payments: { enabled: true }`).
-- Condiciones: +3,5 % por transacción, además de la comisión normal de Stripe. Stripe actúa como vendedor registrado: calcula, cobra, declara e ingresa IVA en ~80 países, gestiona fraude, disputas, reembolsos, soporte de la transacción y recibos. El extracto bancario del cliente muestra `LINK.COM* ...` y el pie de pago muestra condiciones estándar de Stripe. Solo aplica a suscripciones nuevas.
-- En Sandbox no se cobra nada real; el recargo solo existiría con pagos reales.
-- Se puede desactivar sin afectar las pruebas: el pago de prueba, el aviso firmado y la activación Premium funcionan igual.
-- Nada se ha activado en modo real ni hay servicios de pago adicionales aprobados.
+## Qué se hará
+1. Quitar la gestión integral de Stripe (+3,5 %) del pago de prueba y no añadir ningún cálculo automático de impuestos.
+2. Mantener 1,49 € / 3,99 € / 29,99 € como importe final cobrado, sin IVA añadido.
+3. Antes de tocar precios en Stripe Sandbox, comprobar si los precios actuales llevan configuración de impuestos que añada cargos. Solo si fuera necesario, sustituirlos reutilizando los mismos identificadores (no se crean identificadores nuevos, así no cambia ninguna referencia en la app).
+4. Verificar en el formulario de pago de prueba que se muestran exactamente esos importes (con dirección de Bélgica y España).
+5. Ejecutar las 23 pruebas de la app; añadir una prueba que asegure que el pago no activa la gestión integral ni impuestos automáticos.
+6. Documentar las obligaciones fiscales pendientes para el lanzamiento comercial (alta como vendedor en España, IVA del país del cliente vía OSS, facturación, mención "IVA incluido", decisión futura sobre automatizar impuestos) en el informe de facturación, el CHANGELOG y las reglas de negocio.
 
-## Opciones (elige una)
+## Límites
+- Solo Stripe Sandbox; sin pagos reales, sin publicar, sin servicios de pago adicionales.
 
-**A. Desactivar recargo, sin cálculo automático de impuestos (0 % extra)** — recomendado para el presupuesto 0 €
-- Se quita la gestión integral; se cobra exactamente 1,49 / 3,99 / 29,99 € con IVA incluido.
-- Tú (vendedor en España) declaras el IVA más adelante (p. ej. OSS) antes de pagos reales.
-
-**B. Desactivar recargo y usar solo cálculo de impuestos de Stripe (+0,5 % solo con pagos reales)**
-- Precios marcados "IVA incluido"; Stripe desglosa el IVA por país sin subir el precio final. Declaración a tu cargo. Requiere tu aprobación expresa (servicio de pago).
-
-**C. Mantener la gestión integral (+3,5 %)** con precios tratados como IVA incluido. Requiere aprobación expresa.
-
-## Cambios técnicos (tras tu elección)
-- `src/lib/billing.functions.ts`: quitar `managed_payments` (A/B); en B añadir `automatic_tax`.
-- Precios Sandbox: recrear los 3 precios con los mismos IDs e importes, marcados como impuestos incluidos (B/C); en A el importe ya es final.
-- Verificar en Sandbox que el formulario muestra 1,49 € con dirección belga y española; repetir las 23 pruebas de la app.
-- Actualizar `docs/security/billing-001-report.md`, CHANGELOG y la memoria de reglas de negocio (precios finales con IVA incluido).
-- Sin pagos reales, sin publicar, sin otros servicios.
+## Detalles técnicos
+- `src/lib/billing.functions.ts`: eliminar `managed_payments` y su metadato; no añadir `automatic_tax`.
+- Consulta en Sandbox de `tax_behavior` de los precios `weekly_explorer`, `monthly_adventurer`, `annual_voyager` (o los IDs vigentes); recrear con el mismo ID solo si procede.
+- Docs: `docs/security/billing-001-report.md`, `CHANGELOG.md`, `mem://business`, `roadmap.md`.
