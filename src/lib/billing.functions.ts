@@ -2,16 +2,26 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { isPremiumPriceId, checkoutSessionParams, type SubscriptionRow } from "./billing";
 
+const TRUSTED_ORIGINS = [/^https:\/\/spliteasy-we\.lovable\.app$/, /^https:\/\/[a-z0-9-]+--306db1f6-82ab-49c3-a246-dc7ba7faa244\.lovable\.app$/, /^https:\/\/306db1f6-82ab-49c3-a246-dc7ba7faa244\.lovableproject\.com$/, /^http:\/\/localhost(:\d+)?$/];
+/** Fixed confirmation page on a trusted origin; client-supplied URLs are ignored. */
+async function trustedOrigin(): Promise<string> {
+  const { getRequestHeader } = await import("@tanstack/react-start/server");
+  const origin = getRequestHeader("origin") ?? "";
+  return TRUSTED_ORIGINS.some((r) => r.test(origin)) ? origin : "https://spliteasy-we.lovable.app";
+}
+async function trustedReturnUrl(): Promise<string> {
+  return `${await trustedOrigin()}/checkout/return?session_id={CHECKOUT_SESSION_ID}`;
+}
+
 type Env = "sandbox" | "live";
 const envOk = (e: unknown): e is Env => e === "sandbox" || e === "live";
 
 export const createCheckoutSession = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: { priceId: string; returnUrl: string; environment: Env }) => {
+  .inputValidator((d: { priceId: string; returnUrl?: string; environment: Env }) => {
     if (!isPremiumPriceId(d.priceId)) throw new Error("Invalid plan");
     if (!envOk(d.environment)) throw new Error("Invalid environment");
-    if (!/^https?:\/\//.test(d.returnUrl) || d.returnUrl.length > 500) throw new Error("Invalid return URL");
-    return d;
+    return { priceId: d.priceId, environment: d.environment };
   })
   .handler(async ({ data, context }): Promise<{ clientSecret: string } | { error: string }> => {
     const { createStripeClient, getStripeErrorMessage } = await import("./stripe.server");
@@ -45,7 +55,7 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
       }
 
       const session = await stripe.checkout.sessions.create(
-        checkoutSessionParams({ stripePriceId: price.id, returnUrl: data.returnUrl, customerId, userId }),
+        checkoutSessionParams({ stripePriceId: price.id, returnUrl: await trustedReturnUrl(), customerId, userId }),
       );
       return { clientSecret: session.client_secret ?? "" };
     } catch (error) {
@@ -66,9 +76,9 @@ export const getMySubscription = createServerFn({ method: "POST" })
 
 export const createPortalSession = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: { returnUrl: string; environment: Env }) => {
-    if (!envOk(d.environment) || !/^https?:\/\//.test(d.returnUrl)) throw new Error("Invalid input");
-    return d;
+  .inputValidator((d: { returnUrl?: string; environment: Env }) => {
+    if (!envOk(d.environment)) throw new Error("Invalid input");
+    return { environment: d.environment };
   })
   .handler(async ({ data, context }): Promise<{ url: string } | { error: string }> => {
     const { createStripeClient, getStripeErrorMessage } = await import("./stripe.server");
@@ -78,7 +88,7 @@ export const createPortalSession = createServerFn({ method: "POST" })
     if (!sub?.stripe_customer_id) return { error: "NO_SUBSCRIPTION" };
     try {
       const portal = await createStripeClient(data.environment).billingPortal.sessions.create({
-        customer: sub.stripe_customer_id, return_url: data.returnUrl,
+        customer: sub.stripe_customer_id, return_url: `${await trustedOrigin()}/premium`,
       });
       return { url: portal.url };
     } catch (error) {
