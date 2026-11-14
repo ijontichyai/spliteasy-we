@@ -74,7 +74,7 @@ export function PlanView({ data, actions, initialTab, protectedView = false }: {
             <div className="h-full rounded-full bg-accent transition-all" style={{ width: `${Math.min(100, (spent / plan.budgetCents) * 100)}%` }} />
           </div>
         )}
-        {readOnly && <p className="mt-4 rounded-xl bg-secondary px-3 py-2 text-sm">{t("plan.readOnly")}</p>}
+        {readOnly && <p className="mt-4 rounded-xl bg-secondary px-3 py-2 text-sm">{protectedView ? t("support.readOnlyView") : t("plan.readOnly")}</p>}
       </section>
 
       <Tabs defaultValue={initialTab ?? "expenses"} className="mt-6">
@@ -170,7 +170,7 @@ export function PlanView({ data, actions, initialTab, protectedView = false }: {
                   <Avatar name={m.name} i={i} />
                   <span className="flex-1 font-medium">{nameOf(m.id)}</span>
                   <span className={`text-sm font-semibold ${c > 0 ? "text-primary" : c < 0 ? "text-destructive" : "text-muted-foreground"}`}>
-                    {c > 0 ? t("bal.gets", { amount: money(c) }) : c < 0 ? t("bal.owes", { amount: money(-c) }) : t("bal.even")}
+                    {c > 0 ? t("bal.gets", { amount: money(c) }) : c < 0 ? t("bal.owes", { amount: money(-c) }) : protectedView ? t("support.hidden") : t("bal.even")}
                   </span>
                 </li>
               );
@@ -179,7 +179,7 @@ export function PlanView({ data, actions, initialTab, protectedView = false }: {
           <div>
             <h2 className="text-lg font-semibold">{t("bal.howTo")}</h2>
             {transfers.length === 0 ? (
-              <p className="mt-2 text-sm text-muted-foreground">{t("bal.allEven")}</p>
+              <p className="mt-2 text-sm text-muted-foreground">{protectedView ? t("support.hidden") : t("bal.allEven")}</p>
             ) : (
               <ul className="mt-2 space-y-2">
                 {transfers.map((tr) => {
