@@ -125,3 +125,6 @@
 
 ## BILLING-001 — 2026-11-14
 - Premium subscriptions in test mode: three plans, /premium page with carousel and status, embedded checkout, success/cancel pages, billing portal, signed webhook, read-only subscriptions table. See docs/security/billing-001-report.md. Live not activated, not published.
+
+## 2026-11-14 BILLING-001.2
+- Stripe checkout/portal return URLs fixed server-side to SplitEasy origins; 2 tests added (26/26).
