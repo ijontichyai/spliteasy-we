@@ -18,3 +18,5 @@
 - [ ] BILLING-001 manual test payment (4242), failed card, cancel renewal — pending user check
 - [x] BILLING-001.1 precios finales IVA incluido, sin recargos; obligaciones fiscales documentadas
 - [ ] RELEASE-001: migrar zod 3→4; decidir visibilidad pública de la Beta; clave Google para dominio publicado; admin real
+- [x] EXPENSES-002/003: editar gastos, métodos de reparto, propinas, bloqueo por liquidación
+- [ ] EXPENSES-002/003: prueba manual con cuenta real (editar y bloqueo tras liquidación confirmada) — pendiente usuario

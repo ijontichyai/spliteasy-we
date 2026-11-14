@@ -1,5 +1,12 @@
 # Changelog
 
+## EXPENSES-002/003 — Reparte: edición, métodos de reparto y propinas (2026-11-14)
+- Editar gastos (concepto, importe, fecha, categoría, pagador, participantes) con nueva función transaccional `update_expense`; balances recalculados al momento.
+- Métodos: a partes iguales, por consumo individual (resto común a partes iguales), por porcentajes (suma 100 %, resto mayor) e importes personalizados.
+- Propinas: 5/10/15 %, porcentaje libre o importe fijo, repartida solo entre las personas elegidas.
+- Seguridad: mismos permisos que borrar (creador u organizador/admin), plan no archivado, miembros activos, suma exacta; gastos incluidos en una liquidación confirmada quedan bloqueados para editar y borrar (`EXPENSE_LOCKED`); ediciones simultáneas rechazadas (`STALE_EXPENSE`); clave de idempotencia por formulario evita duplicados.
+- Migración 0009. Sin cambios en Premium, roles ni pagos. Pruebas: 38/38 (12 nuevas de cálculo y redondeo). Demo verificada en navegador; flujo con cuenta real NO PROBADO.
+
 ## RELEASE-001 — Auditoría pre-lanzamiento (2026-11-14)
 - Vista protegida: textos 'solo lectura, importes ocultos'.
 - Dependencias parcheadas (12 -> 3 avisos; queda zod 3). Actualización de TanStack revertida por incompatibilidad.

@@ -40,3 +40,4 @@ use the editor.
 - Support UI uses authenticated server functions and the audited support_portal DB dispatcher; admin-only preview operations never use privileged clients or replace the administrator's session.
 - Protected PlanView renders redacted structure only with writes disabled and monetary values hidden; one-time activation codes remain in transient component state, never storage or query caches.
 - Subscriptions are written only by the signature-verified payment webhook; clients get own-row SELECT only, and Premium is derived from current_period_end, never from client input.
+- Split and tip math lives in src/lib/split.ts (integer cents, deterministic rounding); the client sends final shares and split_meta, and DB functions save_expense/update_expense revalidate sums and lock expenses covered by confirmed settlements.
