@@ -97,3 +97,6 @@
 
 ## AUTH-002.2 (diseño) — 2026-11-14
 - Diseño de roles de plataforma (user_roles, has_role, is_admin) y admin_audit_log inmutable. Documento: docs/architecture/auth-002-2-admin-roles.md. Base de datos sin cambios.
+
+## AUTH-002.2 — 2026-11-14
+- Implementados roles de plataforma y auditoría inmutable; A admin temporal. 29/29 pruebas nuevas y 8/8 regresión PASS. Informe: docs/security/auth-002-2-report.md.
