@@ -48,3 +48,13 @@ Decisión aprobada (Opción A): sin gestión integral de cumplimiento de Stripe 
 - Conservar dos pruebas de localización del cliente y emitir factura/recibo conforme.
 - Decidir antes de producción si se automatiza el cálculo/declaración de impuestos (requiere aprobación expresa por su coste).
 - Precios en Stripe: valorar marcar tax_behavior "inclusive" si en el futuro se activa cálculo automático.
+
+## BILLING-001.2 — Stripe return destinations (2026-11-14)
+
+- Finding lov_finding_ab277a23d6fa6e54 fixed: `createCheckoutSession` and `createPortalSession` ignore any client-sent `returnUrl`. The server takes the request Origin only if it matches the SplitEasy allowlist (`safeOrigin` in src/lib/billing.ts); otherwise it uses https://spliteasy-we.lovable.app. Checkout → `/checkout/return?session_id=…`, portal → `/premium`.
+- Tests: 26/26 pass (24 previous + 2 new: checkout and portal return destinations, incl. look-alike domain).
+- Sandbox check (test account B): /premium loads the subscription state; choosing a plan creates the checkout session (200) and Stripe's embedded payment form loads.
+- Premium activation: webhook and `isPremiumActive` unchanged; covered by the existing unit tests.
+- NOT TESTED: completing a 4242 payment, a declined card, opening the subscription management page (needs an account with an active test subscription).
+- Quick security scan: only the intentional plan_limits info note. Deep scan re-run started; result pending.
+- No publishing, Stripe Live remains off.
