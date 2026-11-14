@@ -94,3 +94,6 @@
 
 ## AUTH-002.1b — 2026-11-14
 - Validación RLS con 4 cuentas de prueba: 8/8 escenarios PASS. Informe: docs/security/auth-002-1b-report.md. Sin cambios de esquema.
+
+## AUTH-002.2 (diseño) — 2026-11-14
+- Diseño de roles de plataforma (user_roles, has_role, is_admin) y admin_audit_log inmutable. Documento: docs/architecture/auth-002-2-admin-roles.md. Base de datos sin cambios.
