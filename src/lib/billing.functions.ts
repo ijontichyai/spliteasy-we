@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { isPremiumPriceId, type SubscriptionRow } from "./billing";
+import { isPremiumPriceId, checkoutSessionParams, type SubscriptionRow } from "./billing";
 
 type Env = "sandbox" | "live";
 const envOk = (e: unknown): e is Env => e === "sandbox" || e === "live";
@@ -44,16 +44,9 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
         customerId = (await stripe.customers.create({ ...(user?.email ? { email: user.email } : {}), metadata: { userId } })).id;
       }
 
-      const session = await stripe.checkout.sessions.create({
-        line_items: [{ price: price.id, quantity: 1 }],
-        mode: "subscription",
-        ui_mode: "embedded_page",
-        return_url: data.returnUrl,
-        customer: customerId,
-        managed_payments: { enabled: true },
-        metadata: { userId, managed_payments: "true" },
-        subscription_data: { metadata: { userId } },
-      } as Parameters<typeof stripe.checkout.sessions.create>[0]);
+      const session = await stripe.checkout.sessions.create(
+        checkoutSessionParams({ stripePriceId: price.id, returnUrl: data.returnUrl, customerId, userId }),
+      );
       return { clientSecret: session.client_secret ?? "" };
     } catch (error) {
       return { error: getStripeErrorMessage(error) };
