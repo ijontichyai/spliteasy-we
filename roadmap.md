@@ -16,4 +16,4 @@
 - [ ] Verificar repositorio, rama y hash GitHub sincronizados — solo visibles en Project settings → Git; sin conexión de API accesible
 
 - [ ] BILLING-001 manual test payment (4242), failed card, cancel renewal — pending user check
-- [ ] BILLING-001 decide VAT-inclusive prices
+- [x] BILLING-001.1 precios finales IVA incluido, sin recargos; obligaciones fiscales documentadas
