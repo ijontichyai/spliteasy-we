@@ -23,3 +23,5 @@
 
 - [x] GROUPS-003 + DEMO-002 participants management
 - [ ] Manual check: leave/remove with test accounts A/B/C
+- [x] BRAND-001: integrar logos oficiales, favicon e iconos; documentación de marca
+- [ ] BRAND-001: sustituir spliteasy-symbol.png y logo oscuro por versiones sin defectos (pendiente de archivos vectoriales del propietario)

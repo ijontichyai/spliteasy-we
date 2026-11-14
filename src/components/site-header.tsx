@@ -8,6 +8,7 @@ import { useI18n } from "@/lib/i18n/context";
 import { LOCALES } from "@/lib/i18n/dictionaries";
 import { Button } from "@/components/ui/button";
 import { ThemeSwitcher } from "@/components/theme-switcher";
+import { BrandIcon, BrandLogo } from "@/components/brand-logo";
 
 export function SiteHeader() {
   const { session } = useSession();
@@ -26,9 +27,9 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-30 border-b border-border/70 bg-background/85 shadow-elevation-1 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-5xl items-center justify-between gap-3 px-4">
-        <Link to="/" className="flex items-baseline gap-2">
-          <span className="font-display text-xl font-bold text-primary">SplitEasy</span>
-          <span className="hidden text-xs text-muted-foreground sm:inline">{t("brand.tagline")}</span>
+        <Link to="/" className="flex shrink-0 items-center" aria-label="SplitEasy">
+          <span className="sm:hidden"><BrandIcon className="size-10" /></span>
+          <span className="hidden sm:flex"><BrandLogo className="h-11" /></span>
         </Link>
         <nav className="flex items-center gap-1 sm:gap-2">
           <div className="hidden items-center gap-2 sm:flex">

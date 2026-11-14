@@ -1,5 +1,10 @@
 # Changelog
 
+## BRAND-001 — Identidad oficial (2026-11-14)
+- Logos oficiales en public/brand/; cabecera (logo horizontal en escritorio, icono en móvil), portada y tarjeta de acceso/registro; variante clara/oscura según el tema.
+- Favicon y apple-touch-icon generados del icono aprobado; eliminado favicon.ico por defecto.
+- Defectos del material de origen documentados en docs/brand/spliteasy-brand.md.
+
 ## DEMO-002 BUG-001 — 2026-11-14
 - Fix: participant pencil did nothing because the browser prompt dialog is blocked inside the preview frame; replaced with an inline rename form. Expenses and balances unaffected (ids unchanged).
 - Same cause fixed for "Leave plan"/"Remove" confirmation: inline confirmation instead of the blocked browser dialog.
