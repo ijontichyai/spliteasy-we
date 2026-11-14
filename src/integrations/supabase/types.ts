@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          created_at: string
+          details: Json
+          id: string
+          reason: string
+          result: string
+          target_id: string | null
+          target_type: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          created_at?: string
+          details?: Json
+          id?: string
+          reason: string
+          result: string
+          target_id?: string | null
+          target_type?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          created_at?: string
+          details?: Json
+          id?: string
+          reason?: string
+          result?: string
+          target_id?: string | null
+          target_type?: string | null
+        }
+        Relationships: []
+      }
       expense_shares: {
         Row: {
           amount: number
@@ -610,6 +646,36 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          granted_at: string
+          granted_by: string | null
+          id: string
+          note: string | null
+          revoked_at: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          granted_at?: string
+          granted_by?: string | null
+          id?: string
+          note?: string | null
+          revoked_at?: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          granted_at?: string
+          granted_by?: string | null
+          id?: string
+          note?: string | null
+          revoked_at?: string | null
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -626,6 +692,23 @@ export type Database = {
           _url: string
         }
         Returns: string
+      }
+      admin_grant_role: {
+        Args: {
+          _reason: string
+          _role: Database["public"]["Enums"]["app_role"]
+          _user: string
+        }
+        Returns: Json
+      }
+      admin_list_roles: { Args: { _reason: string }; Returns: Json }
+      admin_revoke_role: {
+        Args: {
+          _reason: string
+          _role: Database["public"]["Enums"]["app_role"]
+          _user: string
+        }
+        Returns: Json
       }
       archive_plan: {
         Args: { _archive: boolean; _plan: string }
@@ -644,7 +727,23 @@ export type Database = {
         Returns: string
       }
       delete_expense: { Args: { _expense: string }; Returns: undefined }
+      has_role: {
+        Args: { _role: Database["public"]["Enums"]["app_role"]; _user: string }
+        Returns: boolean
+      }
+      is_admin: { Args: never; Returns: boolean }
       is_plan_member: { Args: { _plan: string }; Returns: boolean }
+      log_admin_action: {
+        Args: {
+          _action: string
+          _details: Json
+          _reason: string
+          _result: string
+          _target: string
+          _target_type: string
+        }
+        Returns: undefined
+      }
       plan_balances: {
         Args: { _plan: string }
         Returns: {
@@ -700,6 +799,7 @@ export type Database = {
       shares_plan_with: { Args: { _other: string }; Returns: boolean }
     }
     Enums: {
+      app_role: "admin" | "support"
       expense_category: "food" | "transport" | "lodging" | "tickets" | "other"
       member_role: "owner" | "admin" | "member"
       member_status: "active" | "left" | "removed"
@@ -848,6 +948,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["admin", "support"],
       expense_category: ["food", "transport", "lodging", "tickets", "other"],
       member_role: ["owner", "admin", "member"],
       member_status: ["active", "left", "removed"],
