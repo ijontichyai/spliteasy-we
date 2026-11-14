@@ -100,3 +100,6 @@
 
 ## AUTH-002.2 — 2026-11-14
 - Implementados roles de plataforma y auditoría inmutable; A admin temporal. 29/29 pruebas nuevas y 8/8 regresión PASS. Informe: docs/security/auth-002-2-report.md.
+
+## AUTH-003 (diseño) — 2026-11-14
+- Propuesta de soporte seguro y "ver como usuario" sin suplantación real. Documento: docs/architecture/auth-003-support-sessions.md. Sin cambios en BD.
