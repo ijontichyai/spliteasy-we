@@ -1,5 +1,11 @@
 # Changelog
 
+## GROUPS-003 + DEMO-002 — 2026-11-14
+- Demo: add, rename and remove fictional participants (browser only).
+- Real plans: participants can leave; organizer removes anyone, co-admins remove members (DB function remove_plan_member, migration 0010).
+- Leaving/removal requires a zero balance; history kept, pending settlements cancelled, new expenses split among active members only.
+- Tests: 46/46 (8 new). Not tested: leave/remove with real signed-in accounts.
+
 ## EXPENSES-002/003 — Reparte: edición, métodos de reparto y propinas (2026-11-14)
 - Editar gastos (concepto, importe, fecha, categoría, pagador, participantes) con nueva función transaccional `update_expense`; balances recalculados al momento.
 - Métodos: a partes iguales, por consumo individual (resto común a partes iguales), por porcentajes (suma 100 %, resto mayor) e importes personalizados.

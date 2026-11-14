@@ -20,3 +20,6 @@
 - [ ] RELEASE-001: migrar zod 3→4; decidir visibilidad pública de la Beta; clave Google para dominio publicado; admin real
 - [x] EXPENSES-002/003: editar gastos, métodos de reparto, propinas, bloqueo por liquidación
 - [ ] EXPENSES-002/003: prueba manual con cuenta real (editar y bloqueo tras liquidación confirmada) — pendiente usuario
+
+- [x] GROUPS-003 + DEMO-002 participants management
+- [ ] Manual check: leave/remove with test accounts A/B/C
