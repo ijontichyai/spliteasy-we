@@ -2,7 +2,8 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useEffect, useState, type FormEvent } from "react";
 import { toast } from "sonner";
-import { Compass, Plus, Users } from "lucide-react";
+import { ArrowRight, Compass, Plus, Users } from "lucide-react";
+import { INSPIRATION_PHOTOS } from "@/components/discover/inspiration-photos";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -52,6 +53,7 @@ function AppHome() {
   const [suggestedName, setSuggestedName] = useState("");
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [tab, setTab] = useState<"active" | "archived">("active");
   // "+ Plan" in the bottom bar lands here with ?new=true: open the wizard once.
   useEffect(() => {
     if (wantsNew) {
@@ -98,23 +100,56 @@ function AppHome() {
           </p>
         </div>
       ) : (
-        <ul className="mt-8 grid gap-4 sm:grid-cols-2">
-          {plans.map((p) => (
+        <>
+        <div role="tablist" aria-label={t("app.title")} className="mt-8 grid max-w-sm grid-cols-2 gap-1 rounded-2xl bg-surface-3 p-1">
+          {(["active", "archived"] as const).map((k) => (
+            <button key={k} role="tab" type="button" aria-selected={tab === k} onClick={() => setTab(k)}
+              className={`min-h-10 rounded-xl text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${tab === k ? "bg-surface-1 text-primary shadow-elevation-1" : "text-muted-foreground hover:text-foreground"}`}>
+              {t(k === "active" ? "app.tabActive" : "app.tabArchived")}
+            </button>
+          ))}
+        </div>
+        {plans.filter((p) => (tab === "archived") === p.archived).length === 0 && (
+          <p className="mt-6 text-sm text-muted-foreground">{t("app.noneInTab")}</p>
+        )}
+        <ul className="mt-6 grid gap-5 sm:grid-cols-2">
+          {plans.filter((p) => (tab === "archived") === p.archived).map((p) => {
+            const photo = coverFor(p.type);
+            return (
             <li key={p.id}>
-              <Link to="/plans/$planId" params={{ planId: p.id }} search={go ? { tab: go } : {}} className={`block motion-lift rounded-3xl border border-border bg-surface-1 p-5 shadow-elevation-1 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-elevation-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${p.archived ? "opacity-60" : ""}`}>
-                <p className="text-xs font-medium uppercase tracking-wider text-accent">{t(`type.${p.type}`)}{p.city ? ` · ${p.city}` : ""}</p>
-                <h2 className="mt-1 text-xl font-semibold">{p.name}</h2>
-                <p className="mt-3 flex items-center gap-1.5 text-sm text-muted-foreground">
-                  <Users className="size-4" aria-hidden />{t("app.members", { n: p.memberCount })}
-                  {p.archived && <span className="ml-auto rounded-full bg-muted px-2 py-0.5 text-xs">{t("app.archived")}</span>}
-                </p>
+              <Link to="/plans/$planId" params={{ planId: p.id }} search={go ? { tab: go } : {}} className={`group block overflow-hidden motion-lift rounded-3xl border border-border bg-surface-1 shadow-elevation-1 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-elevation-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${p.archived ? "opacity-70" : ""}`}>
+                <div className="relative aspect-[16/7] overflow-hidden bg-surface-3">
+                  <img src={photo.small.url} alt="" loading="lazy" decoding="async" width={600} height={375} className="h-full w-full object-cover transition-transform duration-200 motion-safe:group-hover:scale-[1.03]" />
+                  <span className="absolute right-3 top-3 rounded-full bg-surface-1/90 px-2.5 py-0.5 text-[11px] font-medium text-foreground">{t("discover.illustrative")}</span>
+                </div>
+                <div className="p-5">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-accent">{t(`type.${p.type}`)}{p.city ? ` · ${p.city}` : ""}</p>
+                  <h2 className="mt-1 text-xl font-bold">{p.name}</h2>
+                  <div className="mt-4 flex items-center justify-between gap-3 border-t border-border pt-4">
+                    <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                      <Users className="size-4" aria-hidden />{t("app.members", { n: p.memberCount })}
+                      {p.archived && <span className="ml-2 rounded-full bg-muted px-2 py-0.5 text-xs">{t("app.archived")}</span>}
+                    </span>
+                    <span className="inline-flex min-h-10 items-center gap-1 rounded-full bg-primary px-4 text-sm font-semibold text-primary-foreground">
+                      {t("app.viewPlan")}<ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
+                    </span>
+                  </div>
+                </div>
               </Link>
             </li>
-          ))}
+            );
+          })}
         </ul>
+        </>
       )}
     </main>
   );
+}
+
+// Illustrative cover per plan type (editorial photos, labelled; never a real place).
+function coverFor(type: PlanType) {
+  const idx = type === "dinner" || type === "celebration" ? 3 : type === "activity" ? 2 : type === "trip" ? 1 : 0;
+  return INSPIRATION_PHOTOS[idx] ?? INSPIRATION_PHOTOS[0];
 }
 
 function CreatePlan({ onDone, initialName = "" }: { onDone: () => void; initialName?: string }) {

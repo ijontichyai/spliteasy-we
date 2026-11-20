@@ -35,7 +35,8 @@ function Discover() {
       <ul className="mt-8 grid gap-5 sm:grid-cols-2">
         {INSPIRATION_PHOTOS.map(({ n, image, small, photographer, source }) => (
           <li key={n} className="group overflow-hidden rounded-3xl border border-border bg-surface-1 shadow-elevation-1">
-            <div className="aspect-[16/10] overflow-hidden bg-surface-3">
+            <div className="relative aspect-[16/10] overflow-hidden bg-surface-3">
+              <span className="absolute right-3 top-3 z-10 rounded-full bg-surface-1/90 px-2.5 py-0.5 text-[11px] font-medium text-foreground">{t("discover.illustrative")}</span>
               <img
                 src={image.url}
                 srcSet={`${small.url} 600w, ${image.url} 1200w`}
@@ -56,7 +57,7 @@ function Discover() {
               <Link
                 to="/app"
                 search={{ go: "places" }}
-                className="mt-4 inline-flex min-h-11 items-center gap-1.5 rounded-full px-1 text-sm font-semibold text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-1.5 rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 {t("discover.use")}
                 <ArrowRight className="size-4" aria-hidden />

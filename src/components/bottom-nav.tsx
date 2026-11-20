@@ -22,15 +22,16 @@ export function BottomNav() {
           <Compass className="size-5" aria-hidden />
           {t("nav.discover")}
         </Link>
-        <div className="flex flex-1 justify-center">
+        <div className="flex flex-1 flex-col items-center">
           <Link
             to="/app"
             search={{ new: true }}
             aria-label={t("nav.newPlan")}
-            className="-mt-7 flex size-14 items-center justify-center rounded-full bg-premium text-primary-foreground shadow-elevation-2 ring-4 ring-background transition-transform duration-200 ease-out active:scale-95 focus-visible:outline-none focus-visible:ring-ring"
+            className="-mt-6 flex size-12 items-center justify-center rounded-full bg-premium text-primary-foreground shadow-elevation-2 ring-4 ring-background transition-transform duration-200 ease-out active:scale-95 focus-visible:outline-none focus-visible:ring-ring"
           >
             <Plus className="size-6" aria-hidden />
           </Link>
+          <span aria-hidden className="mt-0.5 text-[11px] font-semibold text-foreground">{t("nav.plan")}</span>
         </div>
         <Link to="/app" className={item} activeOptions={{ includeSearch: false }}>
           <LayoutList className="size-5" aria-hidden />
