@@ -169,3 +169,11 @@
 ## BRAND-001.2 — Corrección final de identidad visual
 - Sustituidos logotipos claro/oscuro, símbolo, icono 256, favicon transparente (32 px) e iconos de inicio azul marino (192/512) con los archivos de SplitEasy_Brand_Replacement_v2. Sin regenerar arte.
 - Dimensiones del logotipo actualizadas a 1920×550; enlaces con `?v=2` para invalidar caché.
+
+## UI-003 — Inicio autenticado sin ruido
+- Inicio con sesión: cabecera breve y botón principal «Crear plan» (abre el asistente existente).
+- Foto del plan activo limitada a 160 px (móvil) / 220 px (escritorio), con «Ilustrativo» y botón «Ver plan».
+- Importes en bloque aparte «Resumen de tus planes activos», cifras grandes; cero en neutro, rojo solo para deuda > 0. Cálculos sin cambios.
+- Retiradas las tarjetas Planifica/Descubre/Reparte del Inicio autenticado (la landing de visitantes no cambia).
+- Singular/plural de participantes (ES/EN) con prueba.
+- Títulos en serif del sistema (Georgia).

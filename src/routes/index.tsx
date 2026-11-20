@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, CalendarHeart, MapPin, Receipt } from "lucide-react";
+import { ArrowRight, CalendarHeart, MapPin, Plus, Receipt } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n/context";
 import { useSession } from "@/hooks/use-session";
@@ -28,6 +28,20 @@ function Home() {
     { icon: MapPin, title: t("home.go"), text: t("home.goText"), search: { go: "places" as const } },
     { icon: Receipt, title: t("home.share"), text: t("home.shareText"), search: { go: "expenses" as const } },
   ];
+  if (session) {
+    return (
+      <main>
+        <section className="mx-auto max-w-3xl px-4 pt-8">
+          <h1 className="text-3xl font-bold leading-tight sm:text-4xl">{t("home.signedInTitle")}</h1>
+          <p className="mt-2 text-muted-foreground">{t("home.signedInSubtitle")}</p>
+          <Button asChild size="lg" className="mt-5 rounded-full px-7">
+            <Link to="/app" search={{ new: true }}><Plus className="size-5" aria-hidden />{t("home.createPlan")}</Link>
+          </Button>
+        </section>
+        <HomeActivePlan />
+      </main>
+    );
+  }
   return (
     <main>
       <section className="bg-hero">
@@ -46,7 +60,6 @@ function Home() {
           </div>
         </div>
       </section>
-      {session && <HomeActivePlan />}
       <section className="mx-auto grid max-w-6xl gap-5 px-4 pb-20 pt-4 sm:grid-cols-3">
         {pillars.map(({ icon: Icon, title, text, search }) => (
           <Link

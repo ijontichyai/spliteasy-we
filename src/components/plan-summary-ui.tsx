@@ -35,48 +35,60 @@ export function HomeActivePlan() {
   const agg = aggregateSummary(Object.values(summary.data ?? {}));
   const money = (c: number) => formatMoney(c, locale);
 
+  const amountClass = (c: number, tone: "debt" | "credit" | "plain") =>
+    c === 0 ? "text-muted-foreground" : tone === "debt" ? "text-destructive" : tone === "credit" ? "text-primary" : "text-foreground";
+
   return (
-    <section aria-labelledby="active-plan" className="mx-auto max-w-3xl px-4 pt-10">
-      <div className="flex items-center justify-between">
-        <h2 id="active-plan" className="text-2xl font-bold">{t("home.activePlan")}</h2>
-        <Link to="/app" className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-accent">{t("home.seeAll")}<ArrowRight className="size-4" aria-hidden /></Link>
-      </div>
-      {plans.isPending ? (
-        <div aria-busy className="mt-4 h-64 animate-pulse rounded-3xl bg-surface-3" ><span className="sr-only">{t("common.loading")}</span></div>
-      ) : plans.isError ? (
-        <div className="mt-4"><LoadError onRetry={() => plans.refetch()} /></div>
-      ) : !first ? (
-        <div className="mt-4 rounded-3xl border border-dashed border-border bg-surface-1 p-6 text-center">
-          <p className="text-muted-foreground">{t("home.noActive")}</p>
-          <Button asChild className="mt-4 rounded-full"><Link to="/app" search={{ new: true }}>{t("app.createFirst")}</Link></Button>
+    <div className="mx-auto max-w-3xl space-y-8 px-4 pb-16 pt-6">
+      <section aria-labelledby="active-plan">
+        <div className="flex items-center justify-between">
+          <h2 id="active-plan" className="text-2xl font-bold">{t("home.activePlan")}</h2>
+          <Link to="/app" className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-accent">{t("home.seeAll")}<ArrowRight className="size-4" aria-hidden /></Link>
         </div>
-      ) : (
-        <div className="mt-4 overflow-hidden rounded-3xl border border-border bg-surface-1 shadow-elevation-1">
-          <Link to="/plans/$planId" params={{ planId: first.id }} className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-            <div className="relative aspect-[16/6] overflow-hidden bg-surface-3">
-              <img src={coverFor(first.type).small.url} alt="" width={600} height={225} className="h-full w-full object-cover" />
+        {plans.isPending ? (
+          <div aria-busy className="mt-3 h-56 animate-pulse rounded-2xl bg-surface-3"><span className="sr-only">{t("common.loading")}</span></div>
+        ) : plans.isError ? (
+          <div className="mt-3"><LoadError onRetry={() => plans.refetch()} /></div>
+        ) : !first ? (
+          <div className="mt-3 rounded-2xl border border-dashed border-border bg-surface-1 p-6 text-center">
+            <p className="text-muted-foreground">{t("home.noActive")}</p>
+          </div>
+        ) : (
+          <article className="mt-3 overflow-hidden rounded-2xl border border-border bg-surface-1 shadow-elevation-1">
+            <div className="relative h-40 overflow-hidden bg-surface-3 sm:h-[220px]">
+              <img src={coverFor(first.type).small.url} alt="" width={600} height={220} className="h-full w-full object-cover" />
               <span className="absolute right-3 top-3 rounded-full bg-surface-1/90 px-2.5 py-0.5 text-[11px] font-medium text-foreground">{t("discover.illustrative")}</span>
             </div>
-            <div className="px-5 pt-4">
-              <h3 className="text-xl font-bold">{first.name}</h3>
-              <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground"><Users className="size-4" aria-hidden />{t("app.members", { n: first.memberCount })}{first.city ? ` · ${first.city}` : ""}</p>
+            <div className="flex flex-wrap items-end justify-between gap-3 p-5">
+              <div className="min-w-0">
+                <h3 className="truncate text-xl font-bold">{first.name}</h3>
+                <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground"><Users className="size-4" aria-hidden />{(first.memberCount === 1 ? t("app.memberOne") : t("app.members", { n: first.memberCount }))}{first.city ? ` · ${first.city}` : ""}</p>
+              </div>
+              <Button asChild className="rounded-full"><Link to="/plans/$planId" params={{ planId: first.id }}>{t("app.viewPlan")}</Link></Button>
             </div>
-          </Link>
-          <div className="m-5 mt-4 border-t border-border pt-4">
+          </article>
+        )}
+      </section>
+
+      {active.length > 0 && (
+        <section aria-labelledby="plans-summary" className="rounded-2xl border border-border bg-surface-1 p-5 shadow-elevation-1">
+          <h2 id="plans-summary" className="text-xl font-bold">{t("home.summaryTitle")}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">{t("home.summaryNote")}</p>
+          <div className="mt-4">
             {summary.isPending ? (
               <p aria-busy className="text-sm text-muted-foreground">{t("common.loading")}</p>
             ) : summary.isError ? (
               <LoadError onRetry={() => summary.refetch()} />
             ) : (
-              <dl className="grid grid-cols-3 gap-3 tabular-nums">
-                <div><dt className="text-xs text-muted-foreground">{t("home.paid")}</dt><dd className="mt-0.5 text-lg font-bold">{money(agg.paidCents)}</dd></div>
-                <div className="border-l border-border pl-3"><dt className="text-xs text-muted-foreground">{t("home.youOwe")}</dt><dd className="mt-0.5 text-lg font-bold text-destructive">{money(agg.oweCents)}</dd></div>
-                <div className="border-l border-border pl-3"><dt className="text-xs text-muted-foreground">{t("home.owedToYou")}</dt><dd className="mt-0.5 text-lg font-bold text-primary">{money(agg.owedCents)}</dd></div>
+              <dl className="grid grid-cols-1 gap-4 tabular-nums sm:grid-cols-3">
+                <div><dt className="text-sm text-muted-foreground">{t("home.paid")}</dt><dd className={`mt-1 text-3xl font-bold ${amountClass(agg.paidCents, "plain")}`}>{money(agg.paidCents)}</dd></div>
+                <div className="border-t border-border pt-4 sm:border-l sm:border-t-0 sm:pl-4 sm:pt-0"><dt className="text-sm text-muted-foreground">{t("home.youOwe")}</dt><dd className={`mt-1 text-3xl font-bold ${amountClass(agg.oweCents, "debt")}`}>{money(agg.oweCents)}</dd></div>
+                <div className="border-t border-border pt-4 sm:border-l sm:border-t-0 sm:pl-4 sm:pt-0"><dt className="text-sm text-muted-foreground">{t("home.owedToYou")}</dt><dd className={`mt-1 text-3xl font-bold ${amountClass(agg.owedCents, "credit")}`}>{money(agg.owedCents)}</dd></div>
               </dl>
             )}
           </div>
-        </div>
+        </section>
       )}
-    </section>
+    </div>
   );
 }

@@ -137,7 +137,7 @@ function AppHome() {
                   </div>
                   <div className="mt-4 flex items-center justify-between gap-3 border-t border-border pt-4">
                     <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                      <Users className="size-4" aria-hidden />{t("app.members", { n: p.memberCount })}
+                      <Users className="size-4" aria-hidden />{(p.memberCount === 1 ? t("app.memberOne") : t("app.members", { n: p.memberCount }))}
                       {p.archived && <span className="ml-2 rounded-full bg-muted px-2 py-0.5 text-xs">{t("app.archived")}</span>}
                     </span>
                     <span className="inline-flex min-h-10 items-center gap-1 rounded-full bg-primary px-4 text-sm font-semibold text-primary-foreground">
