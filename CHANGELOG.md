@@ -1,5 +1,10 @@
 # Changelog
 
+## UI-001 — Primera iteración visual
+- Barra inferior móvil con etiqueta «Plan» bajo el botón +.
+- Planes: pestañas Activos/Finalizados, tarjetas con foto «Ilustrativo» y botón «Ver plan».
+- Descubrir: etiqueta «Ilustrativo» en fotos y botón principal de acción.
+
 ## BRAND-001 — Identidad oficial (2026-11-14)
 - Logos oficiales en public/brand/; cabecera (logo horizontal en escritorio, icono en móvil), portada y tarjeta de acceso/registro; variante clara/oscura según el tema.
 - Favicon y apple-touch-icon generados del icono aprobado; eliminado favicon.ico por defecto.
