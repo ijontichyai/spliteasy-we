@@ -76,7 +76,7 @@ export function SiteHeader() {
   );
 }
 
-function LocaleSwitch() {
+export function LocaleSwitch() {
   const { t, locale, setLocale } = useI18n();
   return (
     <div className="flex rounded-full border border-border p-0.5 text-xs" role="group" aria-label={t("profile.language")}>

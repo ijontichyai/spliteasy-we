@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n/context";
 import { useSession } from "@/hooks/use-session";
 import { BrandLogo } from "@/components/brand-logo";
+import { HomeActivePlan } from "@/components/plan-summary-ui";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -45,6 +46,7 @@ function Home() {
           </div>
         </div>
       </section>
+      {session && <HomeActivePlan />}
       <section className="mx-auto grid max-w-6xl gap-5 px-4 pb-20 pt-4 sm:grid-cols-3">
         {pillars.map(({ icon: Icon, title, text, search }) => (
           <Link

@@ -9,6 +9,10 @@ import { Label } from "@/components/ui/label";
 import { useI18n } from "@/lib/i18n/context";
 import { LOCALES, isLocale, type Locale } from "@/lib/i18n/dictionaries";
 import { myProfileQuery } from "@/lib/profile";
+import { useNavigate } from "@tanstack/react-router";
+import { Globe, LogOut, Sun, LifeBuoy, Crown, ChevronRight } from "lucide-react";
+import { ThemeSwitcher } from "@/components/theme-switcher";
+import { LocaleSwitch } from "@/components/site-header";
 
 export const Route = createFileRoute("/_authenticated/profile")({
   head: () => ({
@@ -33,6 +37,13 @@ function ProfilePage() {
   const [avatar, setAvatar] = useState(profile.avatar_url ?? "");
   const [lang, setLang] = useState<Locale>(isLocale(profile.locale) ? profile.locale : "es");
   const [busy, setBusy] = useState(false);
+  const navigate = useNavigate();
+  async function signOut() {
+    await qc.cancelQueries();
+    qc.clear();
+    await supabase.auth.signOut();
+    navigate({ to: "/", replace: true });
+  }
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -51,8 +62,23 @@ function ProfilePage() {
   return (
     <main className="mx-auto max-w-xl px-4 py-10">
       <h1 className="text-3xl font-bold">{t("profile.title")}</h1>
-      <Button asChild variant="outline" className="mt-4"><Link to="/support">{t("support.title")}</Link></Button>
-      <Button asChild className="ml-2 mt-4"><Link to="/premium">{t("billing.title")}</Link></Button>
+      <div className="mt-6 flex flex-col items-center text-center">
+        {profile.avatar_url
+          ? <img src={profile.avatar_url} alt="" className="size-24 rounded-full object-cover ring-4 ring-surface-3" />
+          : <span aria-hidden className="flex size-24 items-center justify-center rounded-full bg-surface-3 text-3xl font-bold text-primary">{initials(profile.display_name)}</span>}
+        <p className="mt-3 text-2xl font-bold">{profile.display_name}</p>
+        <p className="text-sm text-muted-foreground">{profile.email}</p>
+      </div>
+      <h2 className="sr-only">{t("profile.settings")}</h2>
+      <ul className="mt-6 divide-y divide-border overflow-hidden rounded-3xl border border-border bg-surface-1 shadow-elevation-1">
+        <li className="flex min-h-14 items-center gap-3 px-5"><Globe className="size-5 text-muted-foreground" aria-hidden /><span className="flex-1 font-medium">{t("profile.language")}</span><LocaleSwitch /></li>
+        <li className="flex min-h-14 items-center gap-3 px-5"><Sun className="size-5 text-muted-foreground" aria-hidden /><span className="flex-1 font-medium">{t("profile.appearance")}</span><ThemeSwitcher /></li>
+        <li><Link to="/premium" className="flex min-h-14 items-center gap-3 px-5 hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><Crown className="size-5 text-muted-foreground" aria-hidden /><span className="flex-1 font-medium">{t("billing.title")}</span><ChevronRight className="size-4" aria-hidden /></Link></li>
+        <li><Link to="/support" className="flex min-h-14 items-center gap-3 px-5 hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><LifeBuoy className="size-5 text-muted-foreground" aria-hidden /><span className="flex-1 font-medium">{t("support.title")}</span><ChevronRight className="size-4" aria-hidden /></Link></li>
+      </ul>
+      <button type="button" onClick={signOut} className="mt-4 flex min-h-14 w-full items-center gap-3 rounded-3xl border border-border bg-surface-1 px-5 font-semibold text-destructive hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+        <LogOut className="size-5" aria-hidden />{t("nav.signOut")}
+      </button>
       <form onSubmit={onSubmit} className="mt-8 space-y-5 rounded-3xl border border-border bg-card p-6 shadow-soft">
         <div className="space-y-1.5">
           <Label>{t("profile.email")}</Label>
@@ -79,4 +105,8 @@ function ProfilePage() {
       </form>
     </main>
   );
+}
+
+function initials(name: string) {
+  return name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]?.toUpperCase() ?? "").join("") || "?";
 }

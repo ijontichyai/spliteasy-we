@@ -1,5 +1,10 @@
 # Changelog
 
+## UI-002 — Segunda iteración visual
+- Inicio: «Tu plan activo» con lo pagado, lo que debes y lo que te deben (saldos de plan_balances).
+- Perfil: avatar con iniciales, idioma, apariencia, Premium, soporte y cerrar sesión visibles.
+- Tarjetas de planes: total de gastos con estados de carga y error.
+
 ## UI-001 — Primera iteración visual
 - Barra inferior móvil con etiqueta «Plan» bajo el botón +.
 - Planes: pestañas Activos/Finalizados, tarjetas con foto «Ilustrativo» y botón «Ver plan».

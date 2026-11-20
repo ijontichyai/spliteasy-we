@@ -3,7 +3,10 @@ import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useEffect, useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import { ArrowRight, Compass, Plus, Users } from "lucide-react";
-import { INSPIRATION_PHOTOS } from "@/components/discover/inspiration-photos";
+import { useQuery } from "@tanstack/react-query";
+import { coverFor, LoadError } from "@/components/plan-summary-ui";
+import { plansSummaryQuery } from "@/lib/summary";
+import { formatMoney } from "@/lib/money";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,7 +48,7 @@ export const Route = createFileRoute("/_authenticated/app")({
 const selectCls = "h-10 w-full rounded-md border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
 function AppHome() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const { data: profile } = useSuspenseQuery(myProfileQuery());
   const { data: limits } = useSuspenseQuery(freeLimitsQuery());
   const { data: plans } = useSuspenseQuery(myPlansQuery());
@@ -63,6 +66,7 @@ function AppHome() {
     }
   }, [wantsNew, go, placeName, navigate]);
   const activePlans = plans.filter((p) => !p.archived);
+  const summary = useQuery(plansSummaryQuery(plans.map((p) => p.id)));
   // Coming from a home card with exactly one active plan: open that section directly.
   useEffect(() => {
     const only = activePlans.length === 1 ? activePlans[0] : undefined;
@@ -125,6 +129,12 @@ function AppHome() {
                 <div className="p-5">
                   <p className="text-xs font-semibold uppercase tracking-wider text-accent">{t(`type.${p.type}`)}{p.city ? ` · ${p.city}` : ""}</p>
                   <h2 className="mt-1 text-xl font-bold">{p.name}</h2>
+                  <div className="mt-3 text-sm tabular-nums">
+                    <span className="text-xs text-muted-foreground">{t("app.totalSpent")}</span>
+                    {summary.isPending ? <p aria-busy className="h-7 w-24 animate-pulse rounded bg-surface-3" />
+                      : summary.isError ? <div onClick={(e) => e.preventDefault()}><LoadError onRetry={() => summary.refetch()} /></div>
+                      : <p className="text-2xl font-bold">{formatMoney(summary.data?.[p.id]?.totalCents ?? 0, locale)}</p>}
+                  </div>
                   <div className="mt-4 flex items-center justify-between gap-3 border-t border-border pt-4">
                     <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
                       <Users className="size-4" aria-hidden />{t("app.members", { n: p.memberCount })}
@@ -144,12 +154,6 @@ function AppHome() {
       )}
     </main>
   );
-}
-
-// Illustrative cover per plan type (editorial photos, labelled; never a real place).
-function coverFor(type: PlanType) {
-  const idx = type === "dinner" || type === "celebration" ? 3 : type === "activity" ? 2 : type === "trip" ? 1 : 0;
-  return INSPIRATION_PHOTOS[idx] ?? INSPIRATION_PHOTOS[0];
 }
 
 function CreatePlan({ onDone, initialName = "" }: { onDone: () => void; initialName?: string }) {
