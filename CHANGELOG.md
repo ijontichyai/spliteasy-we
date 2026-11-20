@@ -1,5 +1,10 @@
 # Changelog
 
+## UI-002.1 — Cierre de iteración
+- Perfil: estado de carga inmediato y error con «Reintentar» (también como carga por defecto en páginas privadas).
+- Tarjetas y resumen: el error aparece tras un solo reintento en lugar de tres.
+- Verificado: modo oscuro, móvil/escritorio, carga/error forzados, importes distintos de cero simulados, permisos sobre planes ajenos.
+
 ## UI-002 — Segunda iteración visual
 - Inicio: «Tu plan activo» con lo pagado, lo que debes y lo que te deben (saldos de plan_balances).
 - Perfil: avatar con iniciales, idioma, apariencia, Premium, soporte y cerrar sesión visibles.

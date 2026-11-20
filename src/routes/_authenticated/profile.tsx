@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { useI18n } from "@/lib/i18n/context";
 import { LOCALES, isLocale, type Locale } from "@/lib/i18n/dictionaries";
 import { myProfileQuery } from "@/lib/profile";
+import { PageError, PagePending } from "@/components/route-states";
 import { useNavigate } from "@tanstack/react-router";
 import { Globe, LogOut, Sun, LifeBuoy, Crown, ChevronRight } from "lucide-react";
 import { ThemeSwitcher } from "@/components/theme-switcher";
@@ -26,6 +27,10 @@ export const Route = createFileRoute("/_authenticated/profile")({
     ],
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(myProfileQuery()),
+  pendingMs: 0,
+  pendingComponent: PagePending,
+  errorComponent: PageError,
+  notFoundComponent: () => <p className="p-8">404</p>,
   component: ProfilePage,
 });
 

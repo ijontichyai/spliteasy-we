@@ -9,6 +9,7 @@ export const plansSummaryQuery = (planIds: string[]) =>
   queryOptions({
     queryKey: ["plans", "summary", planIds],
     enabled: planIds.length > 0,
+    retry: 1,
     queryFn: async (): Promise<Record<string, PlanSummary>> => {
       const { data: u } = await supabase.auth.getUser();
       const me = u.user?.id;
