@@ -3,7 +3,6 @@ import { ArrowRight, CalendarHeart, MapPin, Plus, Receipt } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n/context";
 import { useSession } from "@/hooks/use-session";
-import { BrandLogo } from "@/components/brand-logo";
 import { HomeActivePlan } from "@/components/plan-summary-ui";
 
 export const Route = createFileRoute("/")({
@@ -46,7 +45,6 @@ function Home() {
     <main>
       <section className="bg-hero">
         <div className="mx-auto max-w-3xl px-4 pb-20 pt-16 text-center sm:pb-28 sm:pt-24">
-          <div className="mb-8 flex justify-center"><BrandLogo className="h-20 sm:h-28" /></div>
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accent">{t("home.eyebrow")}</p>
           <h1 className="mx-auto mt-4 max-w-2xl text-[clamp(2.5rem,6vw,4.75rem)] font-bold leading-[1.02]">{t("home.title")}</h1>
           <p className="mx-auto mt-5 max-w-xl text-lg text-muted-foreground">{t("home.subtitle")}</p>
