@@ -1,0 +1,39 @@
+# Comprobación sin despliegue: no publica la app ni usa secretos.
+name: Comprobar main y staging (sin publicar)
+
+on:
+  push:
+    branches: [main, staging]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: comprobar-sin-publicar-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  comprobar:
+    name: Pruebas y compilación (sin publicar)
+    runs-on: ubuntu-latest
+    steps:
+      - name: 1. Coger el código
+        uses: actions/checkout@v4
+
+      - name: 2. Preparar Node y Bun
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.1
+
+      - name: 3. Instalar dependencias
+        run: bun install --frozen-lockfile
+
+      - name: 4. Pasar las pruebas
+        run: bun run test
+
+      - name: 5. Comprobar que compila
+        run: bun run build
